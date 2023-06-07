@@ -5,6 +5,9 @@
 #ifndef OS3_QUEUE_H
 #define OS3_QUEUE_H
 
+#include <pthread.h>
+#include <stdlib.h>
+
 typedef struct node {
     pthread_t thread;
     struct node * next;
