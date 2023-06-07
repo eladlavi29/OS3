@@ -4,22 +4,10 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include "segel.h"
+#include "Queue.h"
 
 #ifndef OS3_QUEUE_H
 #define OS3_QUEUE_H
-
-typedef struct node {
-    pthread_t thread;
-    struct node * next;
-} node;
-
-typedef struct Queue {
-    pthread_cond_t  c; // should be initialized
-    pthread_mutex_t m; // should be initialized
-    int queue_size;
-    node *first;
-    node *last;
-} Queue;
 
 Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
