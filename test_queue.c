@@ -2,6 +2,8 @@
 // Created by amirb on 07/06/2023.
 //
 
+#include "Queue.h"
+
 int main(){
     Queue* q = Queue_ctor();
     pthread_t t1 = 1;
