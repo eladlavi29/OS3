@@ -2,7 +2,7 @@
 # To compile, type "make" or make "all"
 # To remove files, type "make clean"
 #
-OBJS = server.o ThreadManager.o request.o segel.o client.o
+OBJS = server.o ThreadManager.o Queue.o request.o segel.o client.o
 TARGET = server
 
 CC = gcc
@@ -16,7 +16,7 @@ all: server client output.cgi
 	-mkdir -p public
 	-cp output.cgi favicon.ico home.html public
 
-server: server.o ThreadManager.o request.o segel.o
+server: server.o ThreadManager.o Queue.o request.o segel.o
 	$(CC) $(CFLAGS) -o server server.o ThreadManager.o request.o segel.o $(LIBS)
 
 client: client.o segel.o
