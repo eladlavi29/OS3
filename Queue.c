@@ -3,6 +3,7 @@
 //
 
 #include "Queue.h"
+#include "segel.h"
 
 Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
@@ -45,7 +46,7 @@ pthread_t dequeue(struct Queue* q) {
     if(q->first==NULL){
         unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
-        return;
+        return -1;
     }
     else{
         result = q->first->thread;
@@ -54,15 +55,15 @@ pthread_t dequeue(struct Queue* q) {
             q->last = NULL;
         }
         q->first = q->first->next;
+        free(to_free);
     }
-    free(to_free);
     q->queue_size--;
     pthread_mutex_unlock(&q->m);
     return result;
 }
 
-node* findBefore(struct Queue* q, node* first, pthread_t target){
-    node* temp = q->first;
+node* findBefore(node* first, pthread_t target){
+    node* temp = first;
     while(temp->next!=NULL && temp->next->thread!=target){
         temp = temp->next;
     }
@@ -106,7 +107,7 @@ void dequeue_by_val(struct Queue* q, pthread_t target) {
     return;
 }
 
-void dtor(struct Queue* q){
+void queue_dtor(struct Queue* q){
     node* to_free;
     node* curr = q->first;
     while(curr!=NULL){
@@ -120,9 +121,14 @@ void dtor(struct Queue* q){
 void print_queue(struct Queue* q){
     node* curr = q->first;
     while(curr!=NULL){
-        printf("pthread_num=%d\n", curr->thread);
+        printf("pthread_num=%d\n", (int)curr->thread);
         curr= curr->next;
     }
+    printf("******************\n");
+}
+
+int getSize(Queue* q){
+    return q->queue_size;
 }
 
 int main(int argc, char *argv[]) {
@@ -133,6 +139,7 @@ int main(int argc, char *argv[]) {
     pthread_t t4 = 4;
     pthread_t t5 = 5;
     print_queue(q);
+
     enqueue(q,t1);
     enqueue(q,t2);
     enqueue(q,t3);
@@ -140,5 +147,17 @@ int main(int argc, char *argv[]) {
     enqueue(q,t5);
     print_queue(q);
 
+    dequeue(q);
+    dequeue(q);
+    dequeue(q);
+    print_queue(q);
+    enqueue(q,t1);
+    enqueue(q,t2);
+    enqueue(q,t3);
+    print_queue(q);
+    dequeue_by_val(q, 4);
+    print_queue(q);
+    dequeue_by_val(q, 2);
+    print_queue(q);
     return 0;
 }

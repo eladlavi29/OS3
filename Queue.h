@@ -28,12 +28,14 @@ void enqueue(struct Queue* q, pthread_t t);
 
 pthread_t dequeue(struct Queue* q);
 
-node* findBefore(struct Queue* q, node* first, pthread_t target);
+node* findBefore(node* first, pthread_t target);
 
 void dequeue_by_val(struct Queue* q, pthread_t target);
 
-void dtor(struct Queue* q);
+void queue_dtor(struct Queue* q);
 
 void print_queue(struct Queue* q);
+
+int getSize(Queue* q);
 
 #endif //OS3_QUEUE_H
