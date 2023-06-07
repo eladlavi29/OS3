@@ -94,6 +94,24 @@ pid_t WaitPid(pid_t pid, int *status, int options)
  * Wrappers for Unix I/O routines
  ********************************/
 
+int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutex_attr_t *mutexattr);
+{
+    int rc;
+
+    if ((rc = pthread_mutex_init(mutex, mutexattr))  < 0)
+        unix_error("Pthread_mutex_init error");
+    return rc;
+}
+
+int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr)
+{
+    int rc;
+
+    if ((rc = pthread_cond_init(cond, cond_attr))  < 0)
+        unix_error("Pthread_cond_init error");
+    return rc;
+}
+
 int Open(const char *pathname, int flags, mode_t mode) 
 {
     int rc;
