@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include "segel.h"
 #include "Queue.h"
-#include <pthread_mutex_attr.h>
 
 #ifndef OS3_QUEUE_H
 #define OS3_QUEUE_H
