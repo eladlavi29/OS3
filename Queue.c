@@ -1,8 +1,7 @@
 //
 // Created by amirb on 07/06/2023.
 //
-#include <pthread.h>
-#include <stdlib.h>
+
 #include "segel.h"
 #include "Queue.h"
 
