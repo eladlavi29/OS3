@@ -124,6 +124,7 @@ void print_queue(struct Queue* q){
         printf("pthread_num=%d\n", (int)curr->thread);
         curr= curr->next;
     }
+    printf("******************");
 }
 
 int getSize(Queue* q){
@@ -138,12 +139,14 @@ int main(int argc, char *argv[]) {
     pthread_t t4 = 4;
     pthread_t t5 = 5;
     print_queue(q);
+
     enqueue(q,t1);
     enqueue(q,t2);
     enqueue(q,t3);
     enqueue(q,t4);
     enqueue(q,t5);
     print_queue(q);
+
     dequeue(q);
     dequeue(q);
     dequeue(q);
