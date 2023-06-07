@@ -132,7 +132,7 @@ void dtor(Queue* q){
     free(q);
 }
 
-void print(Queue* q){
+void print_queue(Queue* q){
     node* curr = q->first;
     while(curr!=NULL){
         printf("pthread_num=%d\n", curr->thread);
