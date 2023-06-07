@@ -3,7 +3,7 @@
 //
 
 int main(){
-    Queue* q = Queue();
+    Queue* q = Queue_ctor();
     pthread_t t1 = 1;
     pthread_t t2 = 2;
     pthread_t t3 = 3;

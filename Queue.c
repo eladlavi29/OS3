@@ -19,7 +19,7 @@ typedef struct Queue {
     node *last;
 } Queue;
 
-Queue* Queue(){
+Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
     q->queue_size = 0;
     Pthread_cond_init(&q->c, NULL);
