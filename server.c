@@ -17,8 +17,25 @@ void getargs(int *port, int *threads, int *queue_size, int *max_size, char* sche
         *max_size = atoi(argv[5]);
 }
 
+
+#include "Queue.h"
+
 int main(int argc, char *argv[])
 {
+    Queue* q = Queue_ctor();
+    pthread_t t1 = 1;
+    pthread_t t2 = 2;
+    pthread_t t3 = 3;
+    pthread_t t4 = 4;
+    pthread_t t5 = 5;
+    print_queue(q);
+    enqueue(q,t1);
+    enqueue(q,t2);
+    enqueue(q,t3);
+    enqueue(q,t4);
+    enqueue(q,t5);
+    print_queue(q);
+    /*
     int listenfd, connfd, port, clientlen;
     struct sockaddr_in clientaddr;
 
@@ -47,6 +64,7 @@ int main(int argc, char *argv[])
     }
 
     ThreadManagerDtor(tm);
+     */
 }
 
 
