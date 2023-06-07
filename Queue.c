@@ -127,7 +127,7 @@ void print_queue(struct Queue* q){
     }
 }
 
-int main(){
+int main(int argc, char *argv[]) {
     Queue* q = Queue_ctor();
     pthread_t t1 = 1;
     pthread_t t2 = 2;
@@ -141,6 +141,8 @@ int main(){
     enqueue(q,t4);
     enqueue(q,t5);
     print_queue(q);
+
+    return 0;
 }
 
 #endif //OS3_QUEUE_H
