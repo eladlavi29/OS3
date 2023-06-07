@@ -144,6 +144,10 @@ int main(int argc, char *argv[]) {
     enqueue(q,t4);
     enqueue(q,t5);
     print_queue(q);
+    dequeue(q);
+    dequeue(q);
+    dequeue(q);
+    print_queue(q);
 
     return 0;
 }
