@@ -7,6 +7,7 @@
 
 #include <pthread.h>
 #include <stdlib.h>
+#include "segel.h"
 
 typedef struct node {
     pthread_t thread;

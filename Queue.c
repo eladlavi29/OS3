@@ -2,7 +2,6 @@
 // Created by amirb on 07/06/2023.
 //
 
-#include "segel.h"
 #include "Queue.h"
 
 #ifndef OS3_QUEUE_H
