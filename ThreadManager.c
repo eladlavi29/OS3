@@ -86,10 +86,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
 
         tm->isThreadActivated[availableThread] = true;
         enqueue(tm->busyThreads, fd);
-        struct exeThreadWrapperStruct* args;
-        args->tm = tm;
-        args->fd = fd;
-        Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)args);
+        struct exeThreadWrapperStruct args;
+        args.tm = tm;
+        args.fd = fd;
+        Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
     }
     else{
         //Check Overload
