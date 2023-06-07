@@ -148,6 +148,11 @@ int main(int argc, char *argv[]) {
     dequeue(q);
     dequeue(q);
     print_queue(q);
-
+    enqueue(q,t1);
+    enqueue(q,t2);
+    enqueue(q,t3);
+    print_queue(q);
+    dequeue_by_val(q, 4);
+    print_queue(q);
     return 0;
 }
