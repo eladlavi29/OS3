@@ -157,5 +157,7 @@ int main(int argc, char *argv[]) {
     print_queue(q);
     dequeue_by_val(q, 4);
     print_queue(q);
+    dequeue_by_val(q, 2);
+    print_queue(q);
     return 0;
 }
