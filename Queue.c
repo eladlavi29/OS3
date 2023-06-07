@@ -4,9 +4,6 @@
 
 #include "Queue.h"
 
-#ifndef OS3_QUEUE_H
-#define OS3_QUEUE_H
-
 Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
     q->queue_size = 0;
@@ -124,6 +121,7 @@ void print_queue(struct Queue* q){
     node* curr = q->first;
     while(curr!=NULL){
         printf("pthread_num=%d\n", curr->thread);
+        curr= curr->next;
     }
 }
 
@@ -144,5 +142,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-#endif //OS3_QUEUE_H
