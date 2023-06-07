@@ -26,7 +26,7 @@ pthread_t dequeue(struct Queue* q);
 
 node* findBefore(struct Queue* q, node* first, pthread_t target);
 
-void dequeue(struct Queue* q, pthread_t target);
+void dequeue_by_val(struct Queue* q, pthread_t target);
 
 void dtor(struct Queue* q);
 

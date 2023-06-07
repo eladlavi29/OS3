@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "segel.h"
 #include "Queue.h"
+#include <pthread_mutex_attr.h>
 
 #ifndef OS3_QUEUE_H
 #define OS3_QUEUE_H
@@ -77,7 +78,7 @@ node* findBefore(struct Queue* q, node* first, pthread_t target){
     return temp;
 }
 
-void dequeue(struct Queue* q, pthread_t target) {
+void dequeue_by_val(struct Queue* q, pthread_t target) {
     pthread_mutex_lock(&q->m);
     if(q->first==NULL){
         unix_error("dequeue error");
