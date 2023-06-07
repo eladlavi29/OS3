@@ -7,12 +7,16 @@
 
 #include "segel.h"
 #include "request.h"
+#include "Queue.h"
 
 struct ThreadManager{
     int m_threads_amount;
     pthread_t* thread_pool;
-    //Queue working
-    //Queue waiting
+    Queue* busyThreads;
+    Queue* waitingThreads;
+
+    pthread_cond_t c; // should be initialized
+    pthread_mutex_t m; // should be initialized
 };
 
 typedef struct ThreadManager ThreadManager;
