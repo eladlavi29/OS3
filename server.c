@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
     // HW3: Create some threads...
-    ThreadManager* tm = ThreadManagerCtor(threads);
+    ThreadManager* tm = ThreadManagerCtor(threads, queue_size);
 
     listenfd = Open_listenfd(port);
     while (1) {

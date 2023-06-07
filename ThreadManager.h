@@ -5,13 +5,16 @@
 #ifndef OS3_THREADMANAGER_H
 #define OS3_THREADMANAGER_H
 
+#include <stdbool.h>
 #include "segel.h"
 #include "request.h"
 #include "Queue.h"
 
 struct ThreadManager{
-    int m_threads_amount;
+    int threads_amount;
+    int queue_size;
     pthread_t* thread_pool;
+    bool* isThreadActivated;
     Queue* busyThreads;
     Queue* waitingThreads;
 
@@ -21,7 +24,7 @@ struct ThreadManager{
 
 typedef struct ThreadManager ThreadManager;
 
-ThreadManager* ThreadManagerCtor(int threads_amount);
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size);
 
 void ThreadManagerDtor(ThreadManager* tm);
 

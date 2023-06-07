@@ -15,19 +15,19 @@ Queue* Queue_ctor(){
     return q;
 }
 
-void enqueue(struct Queue* q, pthread_t t) {
+void enqueue(struct Queue* q, int fd) {
     pthread_mutex_lock(&q->m);
     /* insert from last */
     if(q->last==NULL){
         q->first = (node * ) malloc(sizeof(node));
-        q->first->thread = t;
+        q->first->fd = fd;
         q->first->next =NULL;
         q->last = q->first;
     }
     else{
         node * temp = (node * ) malloc(sizeof(node));
         temp->next = NULL;
-        temp->thread = t;
+        temp->fd = fd;
         q->last->next = temp;
         q->last = temp;
     }
@@ -36,9 +36,9 @@ void enqueue(struct Queue* q, pthread_t t) {
     pthread_mutex_unlock(&q->m);
 }
 
-pthread_t dequeue(struct Queue* q) {
+int dequeue(struct Queue* q) {
     pthread_mutex_lock(&q->m);
-    pthread_t result;
+    int result;
     while (q->queue_size == 0) {
         pthread_cond_wait(&q->c, &q->m);
     }
@@ -49,7 +49,7 @@ pthread_t dequeue(struct Queue* q) {
         return -1;
     }
     else{
-        result = q->first->thread;
+        result = q->first->fd;
         node* to_free = q->first;
         if(q->first==q->last){
             q->last = NULL;
@@ -62,9 +62,9 @@ pthread_t dequeue(struct Queue* q) {
     return result;
 }
 
-node* findBefore(node* first, pthread_t target){
+node* findBefore(node* first, int fd){
     node* temp = first;
-    while(temp->next!=NULL && temp->next->thread!=target){
+    while(temp->next!=NULL && temp->next->fd!=fd){
         temp = temp->next;
     }
     if(temp->next==NULL){
@@ -73,14 +73,14 @@ node* findBefore(node* first, pthread_t target){
     return temp;
 }
 
-void dequeue_by_val(struct Queue* q, pthread_t target) {
+void dequeue_by_val(struct Queue* q, int fd) {
     pthread_mutex_lock(&q->m);
     if(q->first==NULL){
         unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
         return;
     }
-    if(q->first->thread==target){
+    if(q->first->fd==fd){
         node* to_free = q->first;
         if(q->first==q->last){
             q->last = NULL;
@@ -91,7 +91,7 @@ void dequeue_by_val(struct Queue* q, pthread_t target) {
         pthread_mutex_unlock(&q->m);
         return;
     }
-    node* before = findBefore(q->first, target);
+    node* before = findBefore(q->first, fd);
     if(before==NULL){
         unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
@@ -107,7 +107,7 @@ void dequeue_by_val(struct Queue* q, pthread_t target) {
     return;
 }
 
-void queue_dtor(struct Queue* q){
+void Queue_dtor(struct Queue* q){
     node* to_free;
     node* curr = q->first;
     while(curr!=NULL){
@@ -121,7 +121,7 @@ void queue_dtor(struct Queue* q){
 void print_queue(struct Queue* q){
     node* curr = q->first;
     while(curr!=NULL){
-        printf("pthread_num=%d\n", (int)curr->thread);
+        printf("pthread_num=%d\n", (int)curr->fd);
         curr= curr->next;
     }
     printf("******************\n");
@@ -131,33 +131,3 @@ int getSize(Queue* q){
     return q->queue_size;
 }
 
-int main(int argc, char *argv[]) {
-    Queue* q = Queue_ctor();
-    pthread_t t1 = 1;
-    pthread_t t2 = 2;
-    pthread_t t3 = 3;
-    pthread_t t4 = 4;
-    pthread_t t5 = 5;
-    print_queue(q);
-
-    enqueue(q,t1);
-    enqueue(q,t2);
-    enqueue(q,t3);
-    enqueue(q,t4);
-    enqueue(q,t5);
-    print_queue(q);
-
-    dequeue(q);
-    dequeue(q);
-    dequeue(q);
-    print_queue(q);
-    enqueue(q,t1);
-    enqueue(q,t2);
-    enqueue(q,t3);
-    print_queue(q);
-    dequeue_by_val(q, 4);
-    print_queue(q);
-    dequeue_by_val(q, 2);
-    print_queue(q);
-    return 0;
-}

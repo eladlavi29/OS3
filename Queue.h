@@ -10,7 +10,7 @@
 #include "segel.h"
 
 typedef struct node {
-    pthread_t thread;
+    int fd;
     struct node * next;
 } node;
 
@@ -24,15 +24,15 @@ typedef struct Queue {
 
 Queue* Queue_ctor();
 
-void enqueue(struct Queue* q, pthread_t t);
+void enqueue(struct Queue* q, int fd);
 
-pthread_t dequeue(struct Queue* q);
+int dequeue(struct Queue* q);
 
-node* findBefore(node* first, pthread_t target);
+node* findBefore(node* first, int fd);
 
-void dequeue_by_val(struct Queue* q, pthread_t target);
+void dequeue_by_val(struct Queue* q, int fd);
 
-void queue_dtor(struct Queue* q);
+void Queue_dtor(struct Queue* q);
 
 void print_queue(struct Queue* q);
 

@@ -112,6 +112,26 @@ int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr)
     return rc;
 }
 
+int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg){
+    int rc;
+
+    if ((rc = pthread_create(thread, attr, start_routine, arg))  < 0)
+        unix_error("Pthread_create error");
+    return rc;
+}
+
+void Pthread_exit(void* retval){
+    pthread_exit(retval);
+}
+
+pthread_t Pthread_self(){
+    return pthread_self();
+}
+
+int Pthread_equal(pthread_t t1, pthread_t t2){
+    return pthread_equal(t1, t2);
+}
+
 int Open(const char *pathname, int flags, mode_t mode) 
 {
     int rc;

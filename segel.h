@@ -75,6 +75,10 @@ int Setenv(const char *name, const char *value, int overwrite);
 /* Unix I/O wrappers */
 int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
+int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg);
+void Pthread_exit(void* retval);
+pthread_t Pthread_self();
+int Pthread_equal(pthread_t t1, pthread_t t2);
 int Open(const char *pathname, int flags, mode_t mode);
 ssize_t Read(int fd, void *buf, size_t count);
 ssize_t Write(int fd, const void *buf, size_t count);
