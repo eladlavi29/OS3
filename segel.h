@@ -73,6 +73,8 @@ int Gethostname(char *name, size_t len) ;
 int Setenv(const char *name, const char *value, int overwrite);
 
 /* Unix I/O wrappers */
+int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutex_attr_t *mutexattr);
+int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
 int Open(const char *pathname, int flags, mode_t mode);
 ssize_t Read(int fd, void *buf, size_t count);
 ssize_t Write(int fd, const void *buf, size_t count);
