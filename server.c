@@ -12,13 +12,19 @@
 //
 
 // HW3: Parse the new arguments too
-void getargs(int *port, int argc, char *argv[])
+void getargs(int *port, int *threads, int *queue_size, int *max_size, char* schedalg, int argc, char *argv[])
 {
-    if (argc < 2) {
+    if (argc < 5) {
 	fprintf(stderr, "Usage: %s <port>\n", argv[0]);
 	exit(1);
     }
     *port = atoi(argv[1]);
+    *threads = atoi(argv[2]);
+    *queue_size = atoi(argv[3]);
+    strcpy(schedalg, argv[4]);
+
+    if(argc > 5)
+        *max_size = atoi(argv[5]);
 }
 
 
@@ -27,8 +33,15 @@ int main(int argc, char *argv[])
     int listenfd, connfd, port, clientlen;
     struct sockaddr_in clientaddr;
 
-    getargs(&port, argc, argv);
+    //New parameters
+    int threads, queue_size, max_size;
+    char schedalg[MAXLINE];
 
+    getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
+
+    fprintf(stdout, "%d %d %d %s %d\n", port, threads, queue_size, schedalg, max_size);
+
+    /*
     // 
     // HW3: Create some threads...
     //
@@ -47,7 +60,7 @@ int main(int argc, char *argv[])
 
 	Close(connfd);
     }
-
+    */
 }
 
 
