@@ -17,6 +17,7 @@ void getargs(int *port, int *threads, int *queue_size, int *max_size, char* sche
         *max_size = atoi(argv[5]);
 }
 
+
 #include "Queue.h"
 
 int main(int argc, char *argv[])
