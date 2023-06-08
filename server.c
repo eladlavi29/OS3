@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     //New parameters
     int threads, queue_size, max_size;
-    char schedalg[MAXLINE];
+    char* schedalg;
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
@@ -41,8 +41,7 @@ int main(int argc, char *argv[])
 
     while (1) {
         //Block overload protocol
-        printf("\n\n%s %d\n\n", schedalg, strcmp(schedalg, "block"));
-        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size){
+        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, "block")){
             printf("\n\nHi there man\n\n");
         }
 
