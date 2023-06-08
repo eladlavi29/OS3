@@ -10,7 +10,7 @@
 #include "request.h"
 #include "Queue.h"
 
-const char* BLOCK_SCHEDALG = "block";
+#define BLOCK_SCHEDALG "block"
 
 struct ThreadManager{
     int threads_amount;
