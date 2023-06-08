@@ -19,7 +19,6 @@ void getargs(int *port, int *threads, int *queue_size, int *max_size, char* sche
 
 int main(int argc, char *argv[])
 {
-    printf("START0");
     int listenfd, connfd, port, clientlen;
     struct sockaddr_in clientaddr;
 
@@ -30,12 +29,12 @@ int main(int argc, char *argv[])
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
     // HW3: Create some threads...
-    printf("START1");
+    printf("START1\n");
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size);
-    printf("START2");
+    printf("START2\n");
     listenfd = Open_listenfd(port);
 
-    printf("START LISTENING");
+    printf("START LISTENING\n");
 
     while (1) {
         clientlen = sizeof(clientaddr);

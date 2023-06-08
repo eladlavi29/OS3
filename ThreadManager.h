@@ -10,8 +10,6 @@
 #include "request.h"
 #include "Queue.h"
 
-#define NO_TASK -1
-
 struct ThreadManager{
     int threads_amount;
     int queue_size;
