@@ -48,7 +48,7 @@ void removeThread(ThreadManager* tm, int fd){
     else{
         int currThreadInd = -1;
         for(int i = 0; currThreadInd == -1; ++i){
-            if(pthread_equal(Pthread_self(), tm->thread_pool[i]))
+            if(Pthread_equal(Pthread_self(), tm->thread_pool[i]))
                 currThreadInd = i;
         }
         tm->isThreadActivated[currThreadInd] = false;
@@ -63,12 +63,8 @@ void exeThread(ThreadManager* tm, int fd){
     removeThread(tm, fd);
 }
 
-struct exeThreadWrapperStruct{
-    ThreadManager* tm;
-    int fd;
-};
 void* exeThreadWrapper(void* arg){
-    struct exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
+    exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
 
     exeThread(temp.tm, temp.fd);
 
@@ -86,7 +82,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
 
         tm->isThreadActivated[availableThread] = true;
         enqueue(tm->busyThreads, fd);
-        struct exeThreadWrapperStruct args;
+        exeThreadWrapperStruct args;
         args.tm = tm;
         args.fd = fd;
         Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);

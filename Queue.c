@@ -121,7 +121,7 @@ void Queue_dtor(struct Queue* q){
 void print_queue(struct Queue* q){
     node* curr = q->first;
     while(curr!=NULL){
-        printf("pthread_num=%d\n", (int)curr->fd);
+        printf("pthread_fd=%d\n", (int)curr->fd);
         curr= curr->next;
     }
     printf("******************\n");

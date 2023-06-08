@@ -22,6 +22,11 @@ struct ThreadManager{
     pthread_mutex_t m; // should be initialized
 };
 
+typedef struct exeThreadWrapperStruct{
+    ThreadManager* tm;
+    int fd;
+} exeThreadWrapperStruct;
+
 typedef struct ThreadManager ThreadManager;
 
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size);
