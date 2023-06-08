@@ -70,9 +70,16 @@ void* exeThread(void* temp){
     int new_fd = dequeue(tm->waitingRequests);
     enqueue(tm->busyRequests, new_fd);
 
+    printf("THE THREAD GOT THE ASSIGNMENT\n");
+
     pthread_mutex_unlock(&tm->m);
 
+    printf("REQUEST WILL BE HANDLED RIGHT NOW...\n");
+
     requestHandle(new_fd);
+
+    printf("REQUEST WAS HANDLED...\n");
+
     removeThread(tm, new_fd);
 
     return NULL;
