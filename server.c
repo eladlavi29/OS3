@@ -11,7 +11,7 @@ void getargs(int *port, int *threads, int *queue_size, int *max_size, char* sche
     *port = atoi(argv[1]);
     *threads = atoi(argv[2]);
     *queue_size = atoi(argv[3]);
-    strcpy(schedalg, argv[4]);
+    schedalg = argv[4];
 
     if(argc > 5)
         *max_size = atoi(argv[5]);
