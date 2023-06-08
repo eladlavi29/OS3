@@ -17,14 +17,10 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched
     tm->busyRequests = Queue_ctor();
     tm->waitingRequests = Queue_ctor();
 
-    printf("HERE1\n");
-
     tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
     for(int i = 0; i<threads_amount; i++){
         Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
     }
-
-    printf("HERE2\n");
 
     return tm;
 }

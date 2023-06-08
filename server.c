@@ -32,27 +32,20 @@ int main(int argc, char *argv[])
     pthread_cond_t*  c = malloc(sizeof(pthread_cond_t));
     Pthread_cond_init(c, NULL);
 
-    printf("START1\n");
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size, schedalg, c);
-    printf("START2\n");
     listenfd = Open_listenfd(port);
 
-    printf("START LISTENING\n");
-
+    pthread_mutex_t unnecessary_lock;
+    pthread_mutex_init(&unnecessary_lock, NULL);
     while (1) {
         //Block overload protocol
         while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
-            pthread_cond_wait(c, NULL);
+            pthread_cond_wait(c, unnecessary_lock);
         }
 
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, (socklen_t *) &clientlen);
 
-        //
-        // HW3: In general, don't handle the request in the main thread.
-        // Save the relevant info in a buffer and have one of the worker threads
-        // do the work.
-        //
         ThreadManagerHandleRequest(tm, connfd);
     }
 
