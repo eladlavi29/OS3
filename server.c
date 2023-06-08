@@ -19,6 +19,7 @@ void getargs(int *port, int *threads, int *queue_size, int *max_size, char* sche
 
 int main(int argc, char *argv[])
 {
+    printf("START0");
     int listenfd, connfd, port, clientlen;
     struct sockaddr_in clientaddr;
 
