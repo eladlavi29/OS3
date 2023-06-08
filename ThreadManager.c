@@ -37,7 +37,7 @@ void removeThread(ThreadManager* tm, int fd){
     pthread_mutex_lock(&tm->m);
 
     dequeue_by_val(tm->busyThreads, fd);
-    Close(connfd);
+    Close(fd);
 
     if(getSize(tm->waitingThreads) > 0){
         int new_fd = dequeue(tm->waitingThreads);
