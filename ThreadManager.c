@@ -65,6 +65,8 @@ void* exeThread(void* temp){
         pthread_cond_wait(&tm->waitingRequests->c, &tm->waitingRequests->m);
     }
 
+    printf("A THREAD WOKE UP\n");
+
     int new_fd = dequeue(tm->waitingRequests);
     enqueue(tm->busyRequests, new_fd);
 
@@ -77,5 +79,6 @@ void* exeThread(void* temp){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
+    printf("ThreadManagerHandleRequest\n");
     enqueue(tm->waitingRequests, fd);
 }
