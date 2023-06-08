@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
     while (1) {
         //Block overload protocol
-        char* temp = "block";
+        printf("\n\n%s %d\n\n", schedalg, strcmp(schedalg, "block"));
         if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size){
             printf("\n\nHi there man\n\n");
         }
