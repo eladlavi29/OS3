@@ -5,6 +5,8 @@
 #include "Queue.h"
 #include "ThreadManager.h"
 
+void exeThread(void*);
+
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
     tm->threads_amount = threads_amount;
@@ -25,10 +27,10 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
 }
 
 void ThreadManagerDtor(ThreadManager* tm){
-    Queue_dtor(tm->busyThreads);
-    Queue_dtor(tm->waitingThreads);
+    Queue_dtor(tm->busyRequests);
+    Queue_dtor(tm->waitingRequests);
 
-    for(int i = 0; i<threads_amount; i++){
+    for(int i = 0; i<tm->threads_amount; i++){
         Pthread_cancel(tm->thread_pool[i]);
     }
 
@@ -40,7 +42,6 @@ void ThreadManagerDtor(ThreadManager* tm){
     free(tm);
 }
 
-void exeThread(ThreadManager*, int);
 void removeThread(ThreadManager* tm, int fd){
     pthread_mutex_lock(&tm->m);
 
