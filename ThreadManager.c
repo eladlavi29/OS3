@@ -68,7 +68,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     //Block overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
-    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
+    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(tm->sched_alg, BLOCK_SCHEDALG)){
         pthread_cond_wait(&tm->c, &unnecessary_lock);
     }
 
