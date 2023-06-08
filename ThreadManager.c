@@ -50,7 +50,7 @@ void removeThread(ThreadManager* tm, int fd){
         exeThread(tm, new_fd);
     }
     else{
-        printf("EXITING...\n");
+        printf("EXITING1...\n");
 
         int currThreadInd = -1;
         for(int i = 0; currThreadInd == -1; ++i){
@@ -60,6 +60,7 @@ void removeThread(ThreadManager* tm, int fd){
         tm->isThreadActivated[currThreadInd] = false;
 
         pthread_mutex_unlock(&tm->m);
+        printf("EXITING2...\n");
         Pthread_exit(NULL);
     }
 }
