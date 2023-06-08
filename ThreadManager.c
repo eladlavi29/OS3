@@ -68,6 +68,8 @@ void* exeThread(void* temp){
 
     requestHandle(new_fd);
     removeThread(tm, new_fd);
+
+    return NULL;
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
