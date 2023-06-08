@@ -45,8 +45,10 @@ void removeThread(ThreadManager* tm, int fd){
     if(strcmp(tm->sched_alg, BLOCK_SCHEDALG))
         pthread_cond_signal(&tm->c);
 
-    if(strcmp(tm->sched_alg, BLOCK_FLSUH_SCHEDALG) && getSize(tm->waitingRequests) == 0)
+    if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) && getSize(tm->waitingRequests) == 0){
+        printf("\n\nhi\n\n");
         pthread_cond_signal(&tm->c);
+    }
 
     print_queue(tm->waitingRequests);
 
