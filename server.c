@@ -29,8 +29,9 @@ int main(int argc, char *argv[])
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
     // HW3: Create some threads...
+    printf("START1");
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size);
-
+    printf("START2");
     listenfd = Open_listenfd(port);
 
     printf("START LISTENING");
