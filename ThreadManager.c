@@ -65,8 +65,11 @@ void exeThread(ThreadManager* tm, int fd){
 
 void* exeThreadWrapper(void* arg){
     exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
+    ThreadManager* tm = temp.tm;
+    int fd = temp.fd;
+    free(&temp);
 
-    exeThread(temp.tm, temp.fd);
+    exeThread(tm, fd);
 
     return NULL;
 }
@@ -87,11 +90,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
 
         tm->isThreadActivated[availableThread] = true;
         enqueue(tm->busyThreads, fd);
-        exeThreadWrapperStruct args;
-        args.tm = tm;
-        args.fd = fd;
-        exeThreadWrapper((void*)&args);
-        //Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
+        exeThreadWrapperStruct* args = malloc(sizeof(exeThreadWrapperStruct));
+        args->tm = tm;
+        args->fd = fd;
+        Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)args);
 
         printf("busyThreads Queue:\n");
         print_queue(tm->busyThreads);
