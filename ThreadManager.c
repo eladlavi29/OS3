@@ -7,12 +7,12 @@
 
 void* exeThread(void*);
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg, pthread_cond_t*  c){
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
     tm->threads_amount = threads_amount;
     tm->queue_size = queue_size;
     tm->sched_alg = sched_alg;
-    tm->c = c;
+    Pthread_cond_init(&tm->c, NULL);
 
     tm->busyRequests = Queue_ctor();
     tm->waitingRequests = Queue_ctor();
@@ -43,7 +43,7 @@ void removeThread(ThreadManager* tm, int fd){
     Close(fd);
 
     if(strcmp(tm->sched_alg, BLOCK_SCHEDALG))
-        pthread_cond_signal(tm->c);
+        pthread_cond_signal(&tm->c);
 
     exeThread((void*)tm);
 }
@@ -53,17 +53,9 @@ void* exeThread(void* temp){
 
     int new_fd = dequeue(tm->waitingRequests);
 
-    printf("A THREAD WOKE UP\n");
-
     enqueue(tm->busyRequests, new_fd);
 
-    printf("THE THREAD GOT THE ASSIGNMENT\n");
-
-    printf("REQUEST WILL BE HANDLED RIGHT NOW...\n");
-
     requestHandle(new_fd);
-
-    printf("REQUEST WAS HANDLED...\n");
 
     removeThread(tm, new_fd);
 
@@ -72,6 +64,13 @@ void* exeThread(void* temp){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     printf("ThreadManagerHandleRequest\n");
+
+    //Block overload protocol
+    pthread_mutex_t unnecessary_lock;
+    pthread_mutex_init(&unnecessary_lock, NULL);
+    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
+        pthread_cond_wait(&tm->c, &unnecessary_lock);
+    }
 
     enqueue(tm->waitingRequests, fd);
 }

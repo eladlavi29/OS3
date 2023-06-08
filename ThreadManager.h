@@ -20,7 +20,7 @@ struct ThreadManager{
     Queue* busyRequests;
     Queue* waitingRequests;
 
-    pthread_cond_t*  c;
+    pthread_cond_t  c;
 };
 
 typedef struct ThreadManager ThreadManager;
@@ -31,7 +31,7 @@ typedef struct exeThreadWrapperStruct{
 } exeThreadWrapperStruct;
 
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg, pthread_cond_t*  c);
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg);
 
 void ThreadManagerDtor(ThreadManager* tm);
 
