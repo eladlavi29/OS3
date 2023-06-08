@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     //New parameters
     int threads, queue_size, max_size;
-    char* schedalg;
+    char* schedalg = "";
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
