@@ -7,10 +7,12 @@
 
 void* exeThread(void*);
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg, pthread_cond_t*  c){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
     tm->threads_amount = threads_amount;
     tm->queue_size = queue_size;
+    tm->sched_alg = sched_alg;
+    tm->c = c;
 
     tm->busyRequests = Queue_ctor();
     tm->waitingRequests = Queue_ctor();
@@ -71,5 +73,22 @@ void* exeThread(void* temp){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     printf("ThreadManagerHandleRequest\n");
+
     enqueue(tm->waitingRequests, fd);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

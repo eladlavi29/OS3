@@ -29,8 +29,11 @@ int main(int argc, char *argv[])
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
     // HW3: Create some threads...
+    pthread_cond_t*  c = malloc(sizeof(pthread_cond_t));
+    Pthread_cond_init(c, NULL);
+
     printf("START1\n");
-    ThreadManager* tm = ThreadManagerCtor(threads, queue_size);
+    ThreadManager* tm = ThreadManagerCtor(threads, queue_size, schedalg, c);
     printf("START2\n");
     listenfd = Open_listenfd(port);
 
@@ -46,9 +49,15 @@ int main(int argc, char *argv[])
         // do the work.
         //
         ThreadManagerHandleRequest(tm, connfd);
+
+        //Block overload protocol
+        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
+            printf("\n\nHi there man\n\n");
+        }
     }
 
     ThreadManagerDtor(tm);
+    free(c);
 }
 
 

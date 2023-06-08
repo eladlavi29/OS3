@@ -10,12 +10,17 @@
 #include "request.h"
 #include "Queue.h"
 
+const char* BLOCK_SCHEDALG = "block";
+
 struct ThreadManager{
     int threads_amount;
     int queue_size;
+    char* sched_alg;
     pthread_t* thread_pool;
     Queue* busyRequests;
     Queue* waitingRequests;
+
+    pthread_cond_t*  c;
 };
 
 typedef struct ThreadManager ThreadManager;
@@ -26,7 +31,7 @@ typedef struct exeThreadWrapperStruct{
 } exeThreadWrapperStruct;
 
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size);
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg, pthread_cond_t*  c);
 
 void ThreadManagerDtor(ThreadManager* tm);
 
