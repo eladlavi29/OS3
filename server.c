@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     while (1) {
         //Block overload protocol
         while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
-            pthread_cond_wait(c, unnecessary_lock);
+            pthread_cond_wait(c, &unnecessary_lock);
         }
 
         clientlen = sizeof(clientaddr);
