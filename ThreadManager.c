@@ -68,6 +68,9 @@ void* exeThread(void* temp){
     printf("A THREAD WOKE UP\n");
 
     int new_fd = dequeue(tm->waitingRequests);
+
+    printf("MIDDLE \n");
+
     enqueue(tm->busyRequests, new_fd);
 
     printf("THE THREAD GOT THE ASSIGNMENT\n");
