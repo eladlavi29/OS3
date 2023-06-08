@@ -90,7 +90,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         exeThreadWrapperStruct args;
         args.tm = tm;
         args.fd = fd;
-        requestHandle(args.fd);
+        exeThreadWrapper((void*)&args);
         //Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
 
         printf("busyThreads Queue:\n");
