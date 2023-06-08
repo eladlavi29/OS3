@@ -67,7 +67,7 @@ void* exeThreadWrapper(void* arg){
     exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
     ThreadManager* tm = temp.tm;
     int fd = temp.fd;
-    free((struct exeThreadWrapperStruct*) arg);
+    //free((struct exeThreadWrapperStruct*) arg);
 
     exeThread(tm, fd);
 
