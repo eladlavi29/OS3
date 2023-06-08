@@ -46,7 +46,6 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
 
     if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) && getSize(tm->waitingRequests) == 0){
-        printf("\n\nhi\n\n");
         pthread_cond_signal(&tm->c);
     }
 
@@ -71,6 +70,8 @@ void* exeThread(void* temp){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     enqueue(tm->waitingRequests, fd);
+
+    printf("handling %d\n", fd);
 
     //Block overload protocol
     pthread_mutex_t unnecessary_lock;
