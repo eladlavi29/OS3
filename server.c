@@ -40,6 +40,11 @@ int main(int argc, char *argv[])
     printf("START LISTENING\n");
 
     while (1) {
+        //Block overload protocol
+        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, "block")){
+            printf("\n\nHi there man\n\n");
+        }
+
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, (socklen_t *) &clientlen);
 
@@ -49,11 +54,6 @@ int main(int argc, char *argv[])
         // do the work.
         //
         ThreadManagerHandleRequest(tm, connfd);
-
-        //Block overload protocol
-        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, "block")){
-            printf("\n\nHi there man\n\n");
-        }
     }
 
     ThreadManagerDtor(tm);
