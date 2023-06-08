@@ -32,6 +32,7 @@ void enqueue(struct Queue* q, int fd) {
         q->last = temp;
     }
     q->queue_size++;
+    printf("pthread_cond_signal called\n");
     pthread_cond_signal(&q->c);
     pthread_mutex_unlock(&q->m);
 }
