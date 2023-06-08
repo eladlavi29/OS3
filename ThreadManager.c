@@ -59,6 +59,8 @@ void removeThread(ThreadManager* tm, int fd){
 }
 
 void exeThread(ThreadManager* tm, int fd){
+    printf("Handling request %d \n", fd);
+
     requestHandle(fd);
     removeThread(tm, fd);
 }
