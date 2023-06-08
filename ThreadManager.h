@@ -11,6 +11,7 @@
 #include "Queue.h"
 
 #define BLOCK_SCHEDALG "block"
+#define BLOCK_FLSUH_SCHEDALG "bf"
 
 struct ThreadManager{
     int threads_amount;

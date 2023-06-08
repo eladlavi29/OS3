@@ -45,6 +45,9 @@ void removeThread(ThreadManager* tm, int fd){
     if(strcmp(tm->sched_alg, BLOCK_SCHEDALG))
         pthread_cond_signal(&tm->c);
 
+    if(strcmp(tm->sched_alg, BLOCK_FLSUH_SCHEDALG) && getSize(tm->waitingRequests) == 0)
+        pthread_cond_signal(&tm->c);
+
     exeThread((void*)tm);
 }
 
