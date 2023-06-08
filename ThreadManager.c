@@ -40,6 +40,9 @@ void removeThread(ThreadManager* tm, int fd){
     Close(fd);
 
     if(getSize(tm->waitingThreads) > 0){
+
+        printf("Another request\n");
+
         int new_fd = dequeue(tm->waitingThreads);
         enqueue(tm->busyThreads, new_fd);
 
@@ -47,6 +50,8 @@ void removeThread(ThreadManager* tm, int fd){
         exeThread(tm, new_fd);
     }
     else{
+        printf("EXITING...\n");
+
         int currThreadInd = -1;
         for(int i = 0; currThreadInd == -1; ++i){
             if(Pthread_equal(Pthread_self(), tm->thread_pool[i]))
