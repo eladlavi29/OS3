@@ -59,15 +59,12 @@ void removeThread(ThreadManager* tm, int fd){
 }
 
 void exeThread(ThreadManager* tm, int fd){
-    fprintf(stdout, "Handling request2 %d \n", fd);
-
     requestHandle(fd);
     removeThread(tm, fd);
 }
 
 void* exeThreadWrapper(void* arg){
     exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
-    fprintf(stdout, "Handling request1 %d \n", temp.fd);
 
     exeThread(temp.tm, temp.fd);
 
@@ -93,7 +90,8 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         exeThreadWrapperStruct args;
         args.tm = tm;
         args.fd = fd;
-        Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
+        requestHandle(fd);
+        //Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
 
         printf("busyThreads Queue:\n");
         print_queue(tm->busyThreads);
