@@ -65,14 +65,14 @@ void* exeThread(void* temp){
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     printf("ThreadManagerHandleRequest\n");
 
+    enqueue(tm->waitingRequests, fd);
+
     //Block overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(tm->sched_alg, BLOCK_SCHEDALG)){
         pthread_cond_wait(&tm->c, &unnecessary_lock);
     }
-
-    enqueue(tm->waitingRequests, fd);
 }
 
 
