@@ -37,6 +37,7 @@ void removeThread(ThreadManager* tm, int fd){
     pthread_mutex_lock(&tm->m);
 
     dequeue_by_val(tm->busyThreads, fd);
+    Close(connfd);
 
     if(getSize(tm->waitingThreads) > 0){
         int new_fd = dequeue(tm->waitingThreads);
@@ -67,7 +68,7 @@ void* exeThreadWrapper(void* arg){
     exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
     ThreadManager* tm = temp.tm;
     int fd = temp.fd;
-    //free((struct exeThreadWrapperStruct*) arg);
+    free((struct exeThreadWrapperStruct*) arg);
 
     exeThread(tm, fd);
 

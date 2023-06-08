@@ -42,8 +42,6 @@ int main(int argc, char *argv[])
         // do the work.
         //
         ThreadManagerHandleRequest(tm, connfd);
-
-        Close(connfd);
     }
 
     ThreadManagerDtor(tm);
