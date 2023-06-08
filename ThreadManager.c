@@ -73,6 +73,9 @@ void* exeThreadWrapper(void* arg){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     if(getSize(tm->busyThreads) < tm->threads_amount) {
+
+        printf("There is a thread available\n");
+
         int availableThread = -1;
         for(int i = 0; availableThread == -1; ++i){
             if(!tm->isThreadActivated[i]){
@@ -80,15 +83,28 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
             }
         }
 
+        printf("Thread #%d available\n", availableThread);
+
         tm->isThreadActivated[availableThread] = true;
         enqueue(tm->busyThreads, fd);
         exeThreadWrapperStruct args;
         args.tm = tm;
         args.fd = fd;
         Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)&args);
+
+        printf("busyThreads Queue:\n");
+        print_queue(tm->busyThreads);
+
     }
     else{
         //Check Overload
+
+        printf("There is no thread available\n");
+
         enqueue(tm->waitingThreads, fd);
+
+        printf("waitingThreads Queue:\n");
+        print_queue(tm->waitingThreads);
+
     }
 }
