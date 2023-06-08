@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         ThreadManagerHandleRequest(tm, connfd);
 
         //Block overload protocol
-        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
+        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, "block")){
             printf("\n\nHi there man\n\n");
         }
     }
