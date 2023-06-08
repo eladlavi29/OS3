@@ -18,6 +18,8 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
     Pthread_cond_init(&tm->c, NULL);
     Pthread_mutex_init(&tm->m, NULL);
 
+    printf("HERE\n");
+
     tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
     for(int i = 0; i<threads_amount; i++){
         Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
