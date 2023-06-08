@@ -32,6 +32,9 @@ int main(int argc, char *argv[])
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size);
 
     listenfd = Open_listenfd(port);
+
+    printf("START LISTENING");
+
     while (1) {
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, (socklen_t *) &clientlen);
