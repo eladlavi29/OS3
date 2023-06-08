@@ -48,6 +48,8 @@ void removeThread(ThreadManager* tm, int fd){
     if(strcmp(tm->sched_alg, BLOCK_FLSUH_SCHEDALG) && getSize(tm->waitingRequests) == 0)
         pthread_cond_signal(&tm->c);
 
+    print_queue(tm->waitingRequests);
+
     exeThread((void*)tm);
 }
 
@@ -66,8 +68,6 @@ void* exeThread(void* temp){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
-    printf("ThreadManagerHandleRequest\n");
-
     enqueue(tm->waitingRequests, fd);
 
     //Block overload protocol

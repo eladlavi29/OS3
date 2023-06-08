@@ -32,22 +32,16 @@ void enqueue(struct Queue* q, int fd) {
         q->last = temp;
     }
     q->queue_size++;
-    printf("pthread_cond_signal called\n");
     pthread_cond_signal(&q->c);
-    printf("pthread_mutex_unlock WILL BE called\n");
     pthread_mutex_unlock(&q->m);
-    printf("pthread_mutex_unlock WAS called\n");
 }
 
 int dequeue(struct Queue* q) {
-    printf("DEQUEUE0\n");
     pthread_mutex_lock(&q->m);
     int result;
-    printf("DEQUEUE1\n");
     while (q->queue_size == 0) {
         pthread_cond_wait(&q->c, &q->m);
     }
-    printf("DEQUEUE0\n");
     /* remove from first */
     if(q->first==NULL){
         unix_error("dequeue error");
