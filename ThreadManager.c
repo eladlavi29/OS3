@@ -5,7 +5,7 @@
 #include "Queue.h"
 #include "ThreadManager.h"
 
-void exeThread(void*);
+void* exeThread(void*);
 
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
@@ -52,13 +52,13 @@ void removeThread(ThreadManager* tm, int fd){
     exeThread((void*)tm);
 }
 
-void exeThread(void* temp){
+void* exeThread(void* temp){
     ThreadManager* tm = (ThreadManager*)temp;
 
     pthread_mutex_lock(&tm->m);
 
     while (tm->waitingRequests->queue_size == 0) {
-        cond_wait(&tm->waitingRequests->m, &tm->waitingRequests->c);
+        pthread_cond_wait(&tm->waitingRequests->m, &tm->waitingRequests->c);
     }
 
     int new_fd = dequeue(tm->waitingRequests);
