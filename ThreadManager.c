@@ -59,7 +59,7 @@ void removeThread(ThreadManager* tm, int fd){
 }
 
 void exeThread(ThreadManager* tm, int fd){
-    fprintf(stdin, "Handling request %d \n", fd);
+    fprintf(stdout, "Handling request2 %d \n", fd);
 
     requestHandle(fd);
     removeThread(tm, fd);
@@ -67,7 +67,7 @@ void exeThread(ThreadManager* tm, int fd){
 
 void* exeThreadWrapper(void* arg){
     exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
-    fprintf(stdin, "Handling request %d \n", temp.fd);
+    fprintf(stdout, "Handling request1 %d \n", temp.fd);
 
     exeThread(temp.tm, temp.fd);
 
