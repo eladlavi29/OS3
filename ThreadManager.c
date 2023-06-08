@@ -58,7 +58,7 @@ void* exeThread(void* temp){
     pthread_mutex_lock(&tm->m);
 
     while (tm->waitingRequests->queue_size == 0) {
-        pthread_cond_wait(&tm->waitingRequests->m, &tm->waitingRequests->c);
+        pthread_cond_wait(&tm->waitingRequests->c, &tm->waitingRequests->m);
     }
 
     int new_fd = dequeue(tm->waitingRequests);
