@@ -61,15 +61,9 @@ void* exeThread(void* temp){
 
     pthread_mutex_lock(&tm->m);
 
-    while (tm->waitingRequests->queue_size == 0) {
-        pthread_cond_wait(&tm->waitingRequests->c, &tm->waitingRequests->m);
-    }
-
-    printf("A THREAD WOKE UP\n");
-
     int new_fd = dequeue(tm->waitingRequests);
 
-    printf("MIDDLE \n");
+    printf("A THREAD WOKE UP\n");
 
     enqueue(tm->busyRequests, new_fd);
 
