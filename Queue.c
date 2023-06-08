@@ -38,6 +38,7 @@ void enqueue(struct Queue* q, int fd) {
 }
 
 int dequeue(struct Queue* q) {
+    printf("DEQUEUE0\n");
     pthread_mutex_lock(&q->m);
     int result;
     printf("DEQUEUE1\n");
