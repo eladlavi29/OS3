@@ -116,7 +116,31 @@ int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routin
     int rc;
 
     if ((rc = pthread_create(thread, attr, start_routine, arg))  < 0)
-        unix_error("Pthread_create error");
+        unix_error("pthread_create error");
+    return rc;
+}
+
+void Pthread_cancel(pthread_t thread){
+    int rc;
+
+    if ((rc = pthread_cancel(thread))  != 0)
+        unix_error("pthread_cancel error");
+    return;
+}
+
+int Pthread_cond_destroy(pthread_cond_t *cond){
+    int rc;
+
+    if ((rc = pthread_cond_destroy(cond))  != 0)
+        unix_error("pthread_cond_destroy error");
+    return rc;
+}
+
+int Pthread_mutex_destroy(pthread_mutex_t *mutex){
+    int rc;
+
+    if ((rc = pthread_mutex_destroy(mutex))  != 0)
+        unix_error("pthread_cond_destroy error");
     return rc;
 }
 

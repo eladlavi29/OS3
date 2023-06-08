@@ -10,13 +10,14 @@
 #include "request.h"
 #include "Queue.h"
 
+#define NO_TASK -1
+
 struct ThreadManager{
     int threads_amount;
     int queue_size;
     pthread_t* thread_pool;
-    bool* isThreadActivated;
-    Queue* busyThreads;
-    Queue* waitingThreads;
+    Queue* busyRequests;
+    Queue* waitingRequests;
 
     pthread_cond_t c; // should be initialized
     pthread_mutex_t m; // should be initialized

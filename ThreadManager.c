@@ -9,17 +9,17 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
     tm->threads_amount = threads_amount;
     tm->queue_size = queue_size;
-    tm->isThreadActivated = malloc(threads_amount * sizeof(bool));
-    for(int i = 0; i < threads_amount; ++i){
-        tm->isThreadActivated[i] = false;
-    }
 
-    tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
-    tm->busyThreads = Queue_ctor();
-    tm->waitingThreads = Queue_ctor();
+    tm->busyRequests = Queue_ctor();
+    tm->waitingRequests = Queue_ctor();
 
     Pthread_cond_init(&tm->c, NULL);
     Pthread_mutex_init(&tm->m, NULL);
+
+    tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
+    for(int i = 0; i<threads_amount; i++){
+        Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
+    }
 
     return tm;
 }
@@ -27,8 +27,16 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size){
 void ThreadManagerDtor(ThreadManager* tm){
     Queue_dtor(tm->busyThreads);
     Queue_dtor(tm->waitingThreads);
-    free(tm->isThreadActivated);
+
+    for(int i = 0; i<threads_amount; i++){
+        Pthread_cancel(tm->thread_pool[i]);
+    }
+
     free(tm->thread_pool);
+
+    Pthread_cond_destroy(&tm->c);
+    Pthread_mutex_destroy(&tm->m);
+
     free(tm);
 }
 
@@ -36,85 +44,31 @@ void exeThread(ThreadManager*, int);
 void removeThread(ThreadManager* tm, int fd){
     pthread_mutex_lock(&tm->m);
 
-    dequeue_by_val(tm->busyThreads, fd);
+    dequeue_by_val(tm->busyRequests, fd);
     Close(fd);
 
-    if(getSize(tm->waitingThreads) > 0){
-
-        printf("Another request\n");
-
-        int new_fd = dequeue(tm->waitingThreads);
-        enqueue(tm->busyThreads, new_fd);
-
-        pthread_mutex_unlock(&tm->m);
-        exeThread(tm, new_fd);
-    }
-    else{
-        printf("EXITING1...\n");
-
-        int currThreadInd = -1;
-        for(int i = 0; currThreadInd == -1; ++i){
-            if(Pthread_equal(Pthread_self(), tm->thread_pool[i]))
-                currThreadInd = i;
-        }
-        tm->isThreadActivated[currThreadInd] = false;
-
-        pthread_mutex_unlock(&tm->m);
-        printf("EXITING2...\n");
-        Pthread_exit(NULL);
-    }
+    pthread_mutex_unlock(&tm->m);
+    exeThread((void*)tm);
 }
 
-void exeThread(ThreadManager* tm, int fd){
-    requestHandle(fd);
-    removeThread(tm, fd);
-}
+void exeThread(void* temp){
+    ThreadManager* tm = (ThreadManager*)temp;
 
-void* exeThreadWrapper(void* arg){
-    exeThreadWrapperStruct temp = *(struct exeThreadWrapperStruct*) arg;
-    ThreadManager* tm = temp.tm;
-    int fd = temp.fd;
-    free((struct exeThreadWrapperStruct*) arg);
+    pthread_mutex_lock(&tm->m);
 
-    exeThread(tm, fd);
+    while (tm->waitingRequests->queue_size == 0) {
+        cond_wait(&tm->waitingRequests->m, &tm->waitingRequests->c);
+    }
 
-    return NULL;
+    int new_fd = dequeue(tm->waitingRequests);
+    enqueue(tm->busyRequests, new_fd);
+
+    pthread_mutex_unlock(&tm->m);
+
+    requestHandle(new_fd);
+    removeThread(tm, new_fd);
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
-    if(getSize(tm->busyThreads) < tm->threads_amount) {
-
-        printf("There is a thread available\n");
-
-        int availableThread = -1;
-        for(int i = 0; availableThread == -1; ++i){
-            if(!tm->isThreadActivated[i]){
-                availableThread = i;
-            }
-        }
-
-        printf("Thread #%d available\n", availableThread);
-
-        tm->isThreadActivated[availableThread] = true;
-        enqueue(tm->busyThreads, fd);
-        exeThreadWrapperStruct* args = malloc(sizeof(exeThreadWrapperStruct));
-        args->tm = tm;
-        args->fd = fd;
-        Pthread_create(&tm->thread_pool[availableThread], NULL, exeThreadWrapper, (void*)args);
-
-        printf("busyThreads Queue:\n");
-        print_queue(tm->busyThreads);
-
-    }
-    else{
-        //Check Overload
-
-        printf("There is no thread available\n");
-
-        enqueue(tm->waitingThreads, fd);
-
-        printf("waitingThreads Queue:\n");
-        print_queue(tm->waitingThreads);
-
-    }
+    enqueue(tm->waitingRequests, fd);
 }

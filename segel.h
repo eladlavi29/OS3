@@ -77,6 +77,9 @@ int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexa
 int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
 int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg);
 void Pthread_exit(void* retval);
+void Pthread_cancel(pthread_t thread);
+int Pthread_cond_destroy(pthread_cond_t *cond);
+int Pthread_mutex_destroy(pthread_mutex_t *mutex);
 pthread_t Pthread_self();
 int Pthread_equal(pthread_t t1, pthread_t t2);
 int Open(const char *pathname, int flags, mode_t mode);
