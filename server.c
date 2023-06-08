@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
 
     while (1) {
         //Block overload protocol
-        if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
-            printf("\n\nHi there man\n\n");
+        while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size && strcmp(schedalg, BLOCK_SCHEDALG)){
+            pthread_cond_wait(c, NULL);
         }
 
         clientlen = sizeof(clientaddr);

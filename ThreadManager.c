@@ -46,6 +46,9 @@ void removeThread(ThreadManager* tm, int fd){
     dequeue_by_val(tm->busyRequests, fd);
     Close(fd);
 
+    if(strcmp(tm->sched_alg, BLOCK_SCHEDALG))
+        pthread_cond_signal(tm->c);
+
     exeThread((void*)tm);
 }
 
