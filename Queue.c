@@ -40,9 +40,11 @@ void enqueue(struct Queue* q, int fd) {
 int dequeue(struct Queue* q) {
     pthread_mutex_lock(&q->m);
     int result;
+    printf("DEQUEUE1\n");
     while (q->queue_size == 0) {
         pthread_cond_wait(&q->c, &q->m);
     }
+    printf("DEQUEUE0\n");
     /* remove from first */
     if(q->first==NULL){
         unix_error("dequeue error");
