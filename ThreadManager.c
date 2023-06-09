@@ -98,7 +98,7 @@ void dropRandomThread(ThreadManager* tm){
 
     int removed_request = rand() % getSize(tm->waitingRequests);
     dequeue_by_val(tm->waitingRequests, waiting_requests[removed_request]);
-    Close(removed_request);
+    Close(waiting_requests[removed_request]);
 
     printf("\n\nremoved %d\n\n", removed_request);
 }
