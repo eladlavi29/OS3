@@ -20,7 +20,7 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
     printf("start, fd=%d\n", fd);
     /* insert from last */
     if(q->last==NULL){
-        printf("BAD\n", fd);
+        printf("%s","BAD\n");
         q->first = (node * ) malloc(sizeof(node));
         q->first->fd = fd;
         q->first->next =NULL;
