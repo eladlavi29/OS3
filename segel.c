@@ -204,8 +204,6 @@ void Close(int fd)
 {
     int rc;
 
-    printf("closed %d", fd);
-
     if ((rc = close(fd)) < 0)
         unix_error("Close error");
 }

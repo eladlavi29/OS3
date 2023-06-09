@@ -130,9 +130,9 @@ void dropRandomThread(ThreadManager* tm){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
-    //Drop tail protocol
     printf("handling %d\n", fd);
 
+    //Drop tail protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG) == 0){
         printf("Dropped tail %d\n", fd);
@@ -140,6 +140,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         return;
     }
 
+    //Drop head protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
@@ -149,6 +150,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         free(r);
     }
 
+    //Drop random protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
        && strcmp(tm->sched_alg, DROP_RANDOM_SCHEDALG) == 0){
         printf("waiting queue:\n");
@@ -180,8 +182,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         printf("Block started by %d\n", fd);
         pthread_cond_wait(&tm->c, &tm->m);
     }
-    pthread_mutex_unlock(&tm->m);
-    enqueue(tm->waitingRequests, fd, stats);
 }
 
 
