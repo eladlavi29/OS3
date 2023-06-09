@@ -37,9 +37,6 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         print_queue(q);
     }
     q->queue_size++;
-    printf("first node: %d\n", q->first->fd);
-    printf("last node: %d\n", q->last->fd);
-    printf("size %d\n", q->queue_size);
     pthread_cond_signal(&q->c);
     pthread_mutex_unlock(&q->m);
 }
