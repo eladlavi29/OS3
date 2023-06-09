@@ -8,7 +8,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include "segel.h"
-#include "ThreadManager.h"
 
 typedef struct node {
     int fd;

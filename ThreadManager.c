@@ -78,6 +78,19 @@ void removeThread(ThreadManager* tm, int fd){
     exeThread((void*)tm);
 }
 
+void timeval_subtract(struct timeval *elapsed, struct timeval *pickup, struct timeval *arrival)
+{
+    elapsed->tv_sec = pickup->tv_sec - arrival->tv_sec;
+
+    if ((elapsed->tv_usec = pickup->tv_usec - arrival->tv_usec) < 0)
+    {
+        elapsed->tv_usec += 1000000;
+        elapsed->tv_sec--; // borrow
+    }
+
+    return;
+}
+
 void* exeThread(void* temp){
     ThreadManager* tm = (ThreadManager*)temp;
 
