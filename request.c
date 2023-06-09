@@ -111,8 +111,8 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs, Stats* stats)
    sprintf(buf, "HTTP/1.0 200 OK\r\n");
    sprintf(buf, "%sServer: OS-HW3 Web Server\r\n", buf);
 
-   sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
-   sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
+   sprintf(buf, "%sHeader: Stat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
+   sprintf(buf, "%sHeader: Stat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
 
 
     Rio_writen(fd, buf, strlen(buf));
@@ -148,8 +148,8 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats)
    sprintf(buf, "%sContent-Length: %d\r\n", buf, filesize);
    sprintf(buf, "%sContent-Type: %s\r\n\r\n", buf, filetype);
 
-   sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
-   sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
+   sprintf(buf, "%sHeader: Stat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
+   sprintf(buf, "%sHeader: Stat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
 
 
     Rio_writen(fd, buf, strlen(buf));
