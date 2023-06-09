@@ -97,9 +97,16 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     printf("handling %d\n", fd);
 
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
-          && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG) == 0){
-        printf("Dropped %d\n", fd);
+        && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG) == 0){
+        printf("Dropped tail %d\n", fd);
         Close(fd);
+        return;
+    }
+
+    if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+        && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
+        printf("Dropped head%d\n", fd);
+        Close(dequeue(tm->waitingRequests));
         return;
     }
 
@@ -108,7 +115,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
-    printf("sum size: %d, queue size: %d \n", getSize(tm->waitingRequests) + getSize(tm->busyRequests), tm->queue_size);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
         printf("Block started by %d\n", fd);
