@@ -127,11 +127,16 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         printf("busy queue:\n");
         print_queue(tm->busyRequests);
 
+        pthread_mutex_lock(&tm->waitingRequests->m);
+
         printf("Dropped random\n");
-        int waiting_queue_size = (tm->queue_size - tm->threads_amount + 1) / 2;
-        for(int i = 0; i < waiting_queue_size; ++i){
+        int removed_requests_amount = (tm->queue_size - tm->threads_amount + 1) / 2;
+        for(int i = 0; i < removed_requests_amount; ++i){
             dropRandomThread(tm);
         }
+
+        pthread_mutex_unlock(&tm->waitingRequests->m);
+
 
         printf("waiting queue:\n");
         print_queue(tm->waitingRequests);
