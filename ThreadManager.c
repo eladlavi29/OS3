@@ -69,8 +69,6 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
     }
 
-    print_queue(tm->waitingRequests);
-
     exeThread((void*)tm);
 }
 
@@ -100,6 +98,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     }
 
     enqueue(tm->waitingRequests, fd);
+    printf("waiting queue:\n");
+    print_queue(tm->waitingRequests);
+    printf("busy queue:\n");
+    print_queue(tm->busyRequests);
 
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
