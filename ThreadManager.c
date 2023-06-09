@@ -104,6 +104,8 @@ void dropRandomThread(ThreadManager* tm){
     int removed_request = rand() % getSize(tm->waitingRequests);
     dequeue_by_val(tm->waitingRequests, removed_request);
     Close(removed_request);
+
+    printf("\n\nremoved %d\n\n", removed_request);
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
@@ -130,7 +132,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         printf("busy queue:\n");
         print_queue(tm->busyRequests);
 
-        printf("Dropped random%d\n", fd);
+        printf("Dropped random\n");
         int waiting_queue_size = (tm->queue_size - tm->threads_amount + 1) / 2;
         for(int i = 0; i < waiting_queue_size; ++i){
             dropRandomThread(tm);
