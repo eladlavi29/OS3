@@ -33,8 +33,6 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         temp->stats = stats;
         q->last->next = temp;
         q->last = temp;
-
-        print_queue(q);
     }
     q->queue_size++;
     pthread_cond_signal(&q->c);
@@ -176,7 +174,7 @@ void Queue_dtor(struct Queue* q){
 void print_queue(struct Queue* q, const char* msg){
     node* curr = q->first;
     printf("******************\n");
-    printf(msg);
+    printf("%s", msg);
     while(curr!=NULL){
         printf("pthread_fd=%d\n", (int)curr->fd);
         curr= curr->next;
