@@ -98,10 +98,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     }
 
     enqueue(tm->waitingRequests, fd);
-    printf("waiting queue:\n");
-    print_queue(tm->waitingRequests);
-    printf("busy queue:\n");
-    print_queue(tm->busyRequests);
 
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
@@ -109,6 +105,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG))){
         printf("Block started by %d\n", fd);
+        printf("waiting queue:\n");
+        print_queue(tm->waitingRequests);
+        printf("busy queue:\n");
+        print_queue(tm->busyRequests);
         pthread_cond_wait(&tm->c, &unnecessary_lock);
     }
 }
