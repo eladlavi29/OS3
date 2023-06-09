@@ -37,8 +37,13 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     tm->waitingRequests = Queue_ctor();
 
     tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
+    tm->thread_arr = (Thread*)malloc(threads_amount * sizeof(Thread));
     for(int i = 0; i<threads_amount; i++){
         Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
+        tm->thread_arr[i].thread = tm->thread_pool[i];
+        tm->thread_arr[i].dynamic_req_count = 0;
+        tm->thread_arr[i].static_req_count = 0;
+        tm->thread_arr[i].thread_id = i;
     }
 
     srand(time(NULL));   // Initialization, should only be called once.
@@ -108,7 +113,7 @@ void* exeThread(void* temp){
 
     enqueue(tm->busyRequests, new_fd, stats);
 
-    requestHandle(new_fd, stats);
+    requestHandle(new_fd, stats, tm);
 
     removeThread(tm, new_fd);
 
@@ -177,6 +182,9 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         printf("Block started by %d\n", fd);
         pthread_cond_wait(&tm->c, &tm->m);
     }
+
+    pthread_mutex_unlock(&tm->m);
+    enqueue(tm->waitingRequests, fd,stats);
 }
 
 

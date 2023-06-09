@@ -25,18 +25,9 @@
 #include <arpa/inet.h>
 
 
-struct thread_stats{
-    int handler_thread_id;
-    int handler_thread_req_count;
-    int handler_thread_static_req_count;
-    int handler_thread_dynamic_req_count;
-};
-typedef struct thread_stats thread_stats;
-
 struct Stats{
     struct timeval arrival_time;
     struct timeval dispatch_interval;
-    struct thread_stats handler_thread_stats;
 };
 typedef struct Stats Stats;
 
@@ -46,6 +37,14 @@ struct Request{
     Stats* stats;
 };
 typedef struct Request Request;
+
+struct Thread{
+    pthread_t thread;
+    int thread_id;
+    int static_req_count;
+    int dynamic_req_count;
+};
+typedef struct Thread Thread;
 
 /* Default file permissions are DEF_MODE & ~DEF_UMASK */
 /* $begin createmasks */

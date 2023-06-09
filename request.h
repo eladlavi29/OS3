@@ -1,7 +1,9 @@
 #ifndef __REQUEST_H__
 
-#include "ThreadManager.h"
+#include "segel.h"
 
-void requestHandle(int fd, Stats* stats);
+struct ThreadManager;
+
+void requestHandle(int fd, Stats* stats,struct ThreadManager* tm);
 
 #endif
