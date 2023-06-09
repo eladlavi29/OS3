@@ -90,14 +90,15 @@ void* exeThread(void* temp){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     //Drop tail protocol
-    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+    printf("handling %d\n", fd);
+
+    if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG)){
         Close(fd);
+        return;
     }
 
     enqueue(tm->waitingRequests, fd);
-
-    printf("handling %d\n", fd);
 
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
