@@ -24,6 +24,7 @@ struct ThreadManager{
     pthread_t* thread_pool;
     Queue* busyRequests;
     Queue* waitingRequests;
+    Thread* thread_arr;
 
     pthread_cond_t  c; // should be initialized
     pthread_mutex_t m; // should be initialized
