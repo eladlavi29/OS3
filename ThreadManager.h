@@ -12,6 +12,8 @@
 
 #define BLOCK_SCHEDALG "block"
 #define BLOCK_FLUSH_SCHEDALG "bf"
+#define DYNAMIC_SCHEDALG "dynamic"
+#define DROP_TAIL_SCHEDALG "dt"
 
 struct ThreadManager{
     int threads_amount;

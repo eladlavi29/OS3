@@ -28,7 +28,13 @@ int main(int argc, char *argv[])
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
-    ThreadManager* tm = ThreadManagerCtor(threads, queue_size, schedalg);
+    ThreadManager* tm;
+    if(strcmp(schedalg, DYNAMIC_SCHEDALG)){
+        tm = ThreadManagerCtor(threads, max_size, BLOCK_SCHEDALG);
+    }
+    else{
+        tm = ThreadManagerCtor(threads, queue_size, schedalg);
+    }
     listenfd = Open_listenfd(port);
 
     while (1) {
