@@ -17,9 +17,10 @@ Queue* Queue_ctor(){
 
 void enqueue(struct Queue* q, int fd, Stats* stats) {
     pthread_mutex_lock(&q->m);
-
+    printf("start, fd=%d\n", fd);
     /* insert from last */
     if(q->last==NULL){
+        printf("BAD\n", fd);
         q->first = (node * ) malloc(sizeof(node));
         q->first->fd = fd;
         q->first->next =NULL;
@@ -27,6 +28,7 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         q->last = q->first;
     }
     else{
+        printf("GOOD, last_fd=%d\n", q->last->fd);
         node * temp = (node * ) malloc(sizeof(node));
         temp->next = NULL;
         temp->fd = fd;

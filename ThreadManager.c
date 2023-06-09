@@ -111,14 +111,14 @@ void* exeThread(void* temp){
 
     free(pickup_time);
 
-    printf("new_fd=%d", new_fd);
-    print_queue(tm->waitingRequests,"waiting queue:\n");
-    print_queue(tm->busyRequests, "busy queue:\n");
+    printf("new_fd=%d\n", new_fd);
+    print_queue(tm->waitingRequests,"BEFORE ENQ. waiting queue:\n");
+    print_queue(tm->busyRequests, "BEFORE ENQ. busy queue:\n");
 
     enqueue(tm->busyRequests, new_fd, stats);
 
-    print_queue(tm->waitingRequests,"waiting queue:\n");
-    print_queue(tm->busyRequests, "busy queue:\n");
+    print_queue(tm->waitingRequests,"AFTER ENQ. waiting queue:\n");
+    print_queue(tm->busyRequests, "AFTER ENQ. busy queue:\n");
 
     requestHandle(new_fd, stats, tm);
 
