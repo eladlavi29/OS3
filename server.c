@@ -1,3 +1,6 @@
+#include <time.h>
+#include <stdlib.h>
+
 #include "segel.h"
 #include "ThreadManager.h"
 
@@ -30,6 +33,9 @@ int main(int argc, char *argv[])
 
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size, max_size, schedalg);
     listenfd = Open_listenfd(port);
+
+    srand(time(NULL));   // Initialization, should only be called once.
+    for(int i = 0; i < 5; ++i) printf("%d\n", rand()%10);
 
     while (1) {
         clientlen = sizeof(clientaddr);
