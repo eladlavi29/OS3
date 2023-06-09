@@ -24,11 +24,11 @@ int main(int argc, char *argv[])
 
     //New parameters
     int threads, queue_size, max_size;
-    char* schedalg = "";
+    char schedalg[MAXLINE];
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
-    printf("what's goin on %s\n", schedalg);
+    printf("what's goin on %s %d\n", schedalg, strcmp(schedalg, BLOCK_SCHEDALG));
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size, max_size, schedalg);
     listenfd = Open_listenfd(port);
 
