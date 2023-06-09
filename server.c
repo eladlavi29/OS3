@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 
     ThreadManager* tm;
     if(strcmp(schedalg, DYNAMIC_SCHEDALG)){
+        printf("\n\n%d\n\n", max_size);
         tm = ThreadManagerCtor(threads, max_size, BLOCK_SCHEDALG);
     }
     else{
