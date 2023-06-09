@@ -175,6 +175,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         printf("Block started by %d\n", fd);
         pthread_cond_wait(&tm->c, &tm->m);
     }
+    printf("\n\n\n");
     pthread_mutex_unlock(&tm->m);
     enqueue(tm->waitingRequests, fd, stats);
     printf("waiting queue:\n");
