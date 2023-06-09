@@ -216,7 +216,7 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
          requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not read this file");
          return;
       }
-      requestServeStatic(fd, filename, sbuf.st_size, stats, tm->thread_arr[ind]);
+      requestServeStatic(fd, filename, sbuf.st_size, stats, &tm->thread_arr[ind]);
    } else {
       if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)) {
          requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not run this CGI program");
