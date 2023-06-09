@@ -54,8 +54,8 @@ void ThreadManagerDtor(ThreadManager* tm){
 
     free(tm->thread_pool);
 
-    Pthread_cond_destroy(&q->c);
-    Pthread_mutex_destroy(&q->m);
+    Pthread_cond_destroy(&tm->c);
+    Pthread_mutex_destroy(&tm->m);
 
     free(tm);
 }
