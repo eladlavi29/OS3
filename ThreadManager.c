@@ -8,7 +8,7 @@
 void* exeThread(void*);
 
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_size, char* sched_alg){
-    ThreadManager* tm = malloc(sizeof(ThreadManager));;
+    ThreadManager* tm = malloc(sizeof(ThreadManager));
     tm->threads_amount = threads_amount;
 
     //Dynamic protocol
@@ -78,14 +78,37 @@ void removeThread(ThreadManager* tm, int fd){
     exeThread((void*)tm);
 }
 
+void timeval_subtract(struct timeval *elapsed, struct timeval *pickup, struct timeval *arrival)
+{
+    elapsed->tv_sec = pickup->tv_sec - arrival->tv_sec;
+
+    if ((elapsed->tv_usec = pickup->tv_usec - arrival->tv_usec) < 0)
+    {
+        elapsed->tv_usec += 1000000;
+        elapsed->tv_sec--; // borrow
+    }
+
+    return;
+}
+
 void* exeThread(void* temp){
     ThreadManager* tm = (ThreadManager*)temp;
 
-    int new_fd = dequeue(tm->waitingRequests);
+    Request * r = dequeue(tm->waitingRequests);
+    int new_fd = r->fd;
+    Stats* stats = r->stats;
+    free(r);
 
-    enqueue(tm->busyRequests, new_fd);
+    struct timeval *pickup_time = malloc(sizeof(struct timeval));
+    Gettimeofday(pickup_time, NULL);
 
-    requestHandle(new_fd);
+    timeval_subtract(&stats->dispatch_interval, pickup_time, &stats->arrival_time);
+
+    free(pickup_time);
+
+    enqueue(tm->busyRequests, new_fd, stats);
+
+    requestHandle(new_fd, stats);
 
     removeThread(tm, new_fd);
 
@@ -101,7 +124,7 @@ void dropRandomThread(ThreadManager* tm){
     Close(waiting_requests[removed_request]);
 }
 
-void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
+void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     //Drop tail protocol
     printf("handling %d\n", fd);
 
@@ -115,7 +138,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
-        Close(dequeue(tm->waitingRequests));
+        Request * r = dequeue(tm->waitingRequests);
+        Close(r->fd);
+        free(r->stats);
+        free(r);
     }
 
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
@@ -150,8 +176,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         pthread_cond_wait(&tm->c, &tm->m);
     }
     pthread_mutex_unlock(&tm->m);
-
-    enqueue(tm->waitingRequests, fd);
+    enqueue(tm->waitingRequests, fd, stats);
 }
 
 

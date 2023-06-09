@@ -35,10 +35,14 @@ int main(int argc, char *argv[])
     listenfd = Open_listenfd(port);
 
     while (1) {
+        Stats* stats = malloc(sizeof(Stats));
+
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, (socklen_t *) &clientlen);
 
-        ThreadManagerHandleRequest(tm, connfd);
+        Gettimeofday(&stats->arrival_time, NULL);
+
+        ThreadManagerHandleRequest(tm, connfd, stats);
     }
 
     ThreadManagerDtor(tm);

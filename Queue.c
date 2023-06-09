@@ -15,7 +15,7 @@ Queue* Queue_ctor(){
     return q;
 }
 
-void enqueue(struct Queue* q, int fd) {
+void enqueue(struct Queue* q, int fd, Stats* stats) {
     printf("1\n");
     pthread_mutex_lock(&q->m);
     printf("2\n");
@@ -25,12 +25,15 @@ void enqueue(struct Queue* q, int fd) {
         q->first = (node * ) malloc(sizeof(node));
         q->first->fd = fd;
         q->first->next =NULL;
+        q->first->stats = stats;
         q->last = q->first;
+
     }
     else{
         node * temp = (node * ) malloc(sizeof(node));
         temp->next = NULL;
         temp->fd = fd;
+        temp->stats = stats;
         q->last->next = temp;
         q->last = temp;
     }
@@ -39,9 +42,10 @@ void enqueue(struct Queue* q, int fd) {
     pthread_mutex_unlock(&q->m);
 }
 
-int dequeue(struct Queue* q) {
+Request* dequeue(struct Queue* q) {
     pthread_mutex_lock(&q->m);
     int result;
+    Stats * stats;
     while (q->queue_size == 0) {
         pthread_cond_wait(&q->c, &q->m);
     }
@@ -49,10 +53,11 @@ int dequeue(struct Queue* q) {
     if(q->first==NULL){
         unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
-        return -1;
+        return NULL;
     }
     else{
         result = q->first->fd;
+        stats = q->first->stats;
         node* to_free = q->first;
         if(q->first==q->last){
             q->last = NULL;
@@ -62,7 +67,10 @@ int dequeue(struct Queue* q) {
     }
     q->queue_size--;
     pthread_mutex_unlock(&q->m);
-    return result;
+    Request* r = (Request*)(malloc(sizeof(Request)));
+    r->fd = result;
+    r->stats = stats;
+    return r;
 }
 
 node* findBefore(node* first, int fd){
@@ -78,6 +86,7 @@ node* findBefore(node* first, int fd){
 
 void dequeue_by_val(struct Queue* q, int fd) {
     pthread_mutex_lock(&q->m);
+    Stats* stats;
     if(q->first==NULL){
         unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
@@ -85,10 +94,12 @@ void dequeue_by_val(struct Queue* q, int fd) {
     }
     if(q->first->fd==fd){
         node* to_free = q->first;
+        stats = q->first->stats;
         if(q->first==q->last){
             q->last = NULL;
         }
         q->first = q->first->next;
+        free(stats);
         free(to_free);
         q->queue_size--;
         pthread_mutex_unlock(&q->m);
@@ -102,10 +113,13 @@ void dequeue_by_val(struct Queue* q, int fd) {
     }
     else{
         node* to_free = before->next;
+        stats = before->next->stats;
         before->next = to_free->next;
         free(to_free);
+        free(stats);
     }
     q->queue_size--;
+
     pthread_mutex_unlock(&q->m);
     return;
 }

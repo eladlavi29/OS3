@@ -25,6 +25,28 @@
 #include <arpa/inet.h>
 
 
+struct thread_stats{
+    int handler_thread_id;
+    int handler_thread_req_count;
+    int handler_thread_static_req_count;
+    int handler_thread_dynamic_req_count;
+};
+typedef struct thread_stats thread_stats;
+
+struct Stats{
+    struct timeval arrival_time;
+    struct timeval dispatch_interval;
+    struct thread_stats handler_thread_stats;
+};
+typedef struct Stats Stats;
+
+
+struct Request{
+    int fd;
+    Stats* stats;
+};
+typedef struct Request Request;
+
 /* Default file permissions are DEF_MODE & ~DEF_UMASK */
 /* $begin createmasks */
 #define DEF_MODE   S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
@@ -73,6 +95,7 @@ int Gethostname(char *name, size_t len) ;
 int Setenv(const char *name, const char *value, int overwrite);
 
 /* Unix I/O wrappers */
+int Gettimeofday(struct timeval *restrict tv, struct timezone *restrict tz);
 int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
 int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg);

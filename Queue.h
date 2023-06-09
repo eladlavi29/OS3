@@ -12,6 +12,7 @@
 typedef struct node {
     int fd;
     struct node * next;
+    Stats* stats;
 } node;
 
 typedef struct Queue {
@@ -24,9 +25,9 @@ typedef struct Queue {
 
 Queue* Queue_ctor();
 
-void enqueue(struct Queue* q, int fd);
+void enqueue(struct Queue* q, int fd, Stats* stats);
 
-int dequeue(struct Queue* q);
+Request* dequeue(struct Queue* q);
 
 node* findBefore(node* first, int fd);
 

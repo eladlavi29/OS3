@@ -32,6 +32,9 @@ struct ThreadManager{
 
 typedef struct ThreadManager ThreadManager;
 
+
+
+
 typedef struct exeThreadWrapperStruct{
     ThreadManager* tm;
     int fd;
@@ -42,6 +45,6 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
 
 void ThreadManagerDtor(ThreadManager* tm);
 
-void ThreadManagerHandleRequest(ThreadManager* tm, int fd);
+void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats);
 
 #endif //OS3_THREADMANAGER_H
