@@ -113,6 +113,9 @@ void* exeThread(void* temp){
 
     enqueue(tm->busyRequests, new_fd, stats);
 
+    print_queue(tm->waitingRequests,"waiting queue:\n");
+    print_queue(tm->busyRequests, "busy queue:\n");
+
     requestHandle(new_fd, stats, tm);
 
     removeThread(tm, new_fd);
