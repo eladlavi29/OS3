@@ -33,11 +33,14 @@ Request* dequeue(struct Queue* q);
 node* findBefore(node* first, int fd);
 
 void dequeue_by_val(struct Queue* q, int fd);
+void unlocked_dequeue_by_val(struct Queue* q, int fd);
 
 void Queue_dtor(struct Queue* q);
 
 void print_queue(struct Queue* q);
 
 int getSize(Queue* q);
+
+void getValues(Queue* q, int* dest);
 
 #endif //OS3_QUEUE_H

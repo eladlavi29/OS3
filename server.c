@@ -1,3 +1,6 @@
+#include <time.h>
+#include <stdlib.h>
+
 #include "segel.h"
 #include "ThreadManager.h"
 

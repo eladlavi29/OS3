@@ -41,6 +41,8 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
         Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
     }
 
+    srand(time(NULL));   // Initialization, should only be called once.
+
     return tm;
 }
 
@@ -73,11 +75,6 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
     }
 
-    printf("waiting queue:\n");
-    print_queue(tm->waitingRequests);
-    printf("busy queue:\n");
-    print_queue(tm->busyRequests);
-
     exeThread((void*)tm);
 }
 
@@ -105,6 +102,15 @@ void* exeThread(void* temp){
     return NULL;
 }
 
+void dropRandomThread(ThreadManager* tm){
+    int waiting_requests[getSize(tm->waitingRequests)];
+    getValues(tm->waitingRequests, waiting_requests);
+
+    int removed_request = rand() % getSize(tm->waitingRequests);
+    unlocked_dequeue_by_val(tm->waitingRequests, waiting_requests[removed_request]);
+    Close(waiting_requests[removed_request]);
+}
+
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     //Drop tail protocol
     printf("handling %d\n", fd);
@@ -125,7 +131,31 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         free(r);
     }
 
-    //Block and Block flush overload protocol
+    if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+       && strcmp(tm->sched_alg, DROP_RANDOM_SCHEDALG) == 0){
+        printf("waiting queue:\n");
+        print_queue(tm->waitingRequests);
+        printf("busy queue:\n");
+        print_queue(tm->busyRequests);
+
+        pthread_mutex_lock(&tm->waitingRequests->m);
+
+        printf("Dropped random\n");
+        int removed_requests_amount = (tm->queue_size - tm->threads_amount + 1) / 2;
+        for(int i = 0; i < removed_requests_amount; ++i){
+            dropRandomThread(tm);
+        }
+
+        pthread_mutex_unlock(&tm->waitingRequests->m);
+
+
+        printf("waiting queue:\n");
+        print_queue(tm->waitingRequests);
+        printf("busy queue:\n");
+        print_queue(tm->busyRequests);
+    }
+
+    //Block and Block flush protocol
     pthread_mutex_lock(&tm->m);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){

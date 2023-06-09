@@ -121,6 +121,38 @@ void dequeue_by_val(struct Queue* q, int fd) {
     return;
 }
 
+void unlocked_dequeue_by_val(struct Queue* q, int fd) {
+    if(q->first==NULL){
+        unix_error("dequeue error");
+        pthread_mutex_unlock(&q->m);
+        return;
+    }
+    if(q->first->fd==fd){
+        node* to_free = q->first;
+        if(q->first==q->last){
+            q->last = NULL;
+        }
+        q->first = q->first->next;
+        free(to_free);
+        q->queue_size--;
+        pthread_mutex_unlock(&q->m);
+        return;
+    }
+    node* before = findBefore(q->first, fd);
+    if(before==NULL){
+        unix_error("dequeue error");
+        pthread_mutex_unlock(&q->m);
+        return;
+    }
+    else{
+        node* to_free = before->next;
+        before->next = to_free->next;
+        free(to_free);
+    }
+    q->queue_size--;
+    return;
+}
+
 void Queue_dtor(struct Queue* q){
     node* to_free;
     node* curr = q->first;
@@ -147,5 +179,16 @@ void print_queue(struct Queue* q){
 
 int getSize(Queue* q){
     return q->queue_size;
+}
+
+void getValues(Queue* q, int* dest){
+    //dest must be the size of the queue
+    node* curr = q->first;
+    int i = 0;
+    while(curr!=NULL){
+        dest[i] = (int)curr->fd;
+        ++i;
+        curr= curr->next;
+    }
 }
 
