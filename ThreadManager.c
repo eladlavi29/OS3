@@ -94,7 +94,10 @@ void* exeThread(void* temp){
 
 void dropRandomThread(ThreadManager* tm){
     int waiting_requests[getSize(tm->waitingRequests)];
+    printf("\n\n1\n\n");
+
     getValues(tm->waitingRequests, waiting_requests);
+    printf("\n\n2\n\n");
 
     int removed_request = rand() % getSize(tm->waitingRequests);
     dequeue_by_val(tm->waitingRequests, removed_request);
