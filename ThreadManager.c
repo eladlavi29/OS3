@@ -41,6 +41,8 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
         Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
     }
 
+    srand(time(NULL));   // Initialization, should only be called once.
+
     return tm;
 }
 
@@ -95,6 +97,20 @@ void* exeThread(void* temp){
     return NULL;
 }
 
+void dropRandomThread(ThreadManager* tm){
+    int waiting_requests[getSize(tm->waitingRequests)];
+    for(int i = 0; i < getSize(tm->waitingRequests); ++i){
+        waiting_requests[i] = dequeue(tm->waitingRequests);
+    }
+    for(int i = 0; i < getSize(tm->waitingRequests); ++i){
+        enqueue(tm->waitingRequests, waiting_requests[i]);
+    }
+
+    int removed_request = rand() % getSize(tm->waitingRequests);
+    dequeue_by_val(tm->waitingRequests, removed_request);
+    Close(removed_request);
+}
+
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     //Drop tail protocol
     printf("handling %d\n", fd);
@@ -110,6 +126,16 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
         Close(dequeue(tm->waitingRequests));
+    }
+
+    if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+       && strcmp(tm->sched_alg, DROP_RANDOM_SCHEDALG) == 0){
+        printf("Dropped random%d\n", fd);
+        int waiting_queue_size = (tm->queue_size - tm->threads_amount + 1) / 2;
+
+        for(int i = 0; i < waiting_queue_size; ++i){
+            dropRandomThread(tm);
+        }
     }
 
     //Block and Block flush protocol
