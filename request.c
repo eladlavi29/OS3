@@ -133,6 +133,7 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs, Stats* stats, Th
 
 void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thread* thread)
 {
+    printf("HERE2\n");
    int srcfd;
    char *srcp, filetype[MAXLINE], buf[MAXBUF];
 
@@ -170,6 +171,7 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thre
 // handle a request
 void requestHandle(int fd, Stats* stats, ThreadManager* tm)
 {
+    printf("HERE0\n");
    int is_static;
    struct stat sbuf;
    char buf[MAXLINE], method[MAXLINE], uri[MAXLINE], version[MAXLINE];
@@ -205,6 +207,7 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
        tm->thread_arr[ind].dynamic_req_count = tm->thread_arr[ind].dynamic_req_count + 1;
    }
 
+    printf("HERE1\n");
 
    if (stat(filename, &sbuf) < 0) {
       requestError(fd, filename, "404", "Not found", "OS-HW3 Server could not find this file");
