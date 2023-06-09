@@ -102,6 +102,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
+    printf("sum size: %d, queue size: %d \n", getSize(tm->waitingRequests) + getSize(tm->busyRequests), tm->queue_size);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG))){
         printf("Block started by %d\n", fd);
