@@ -111,7 +111,7 @@ void* exeThread(void* temp){
 
     free(pickup_time);
 
-    print("new_fd=%d", new_fd);
+    printf("new_fd=%d", new_fd);
     print_queue(tm->waitingRequests,"waiting queue:\n");
     print_queue(tm->busyRequests, "busy queue:\n");
 
