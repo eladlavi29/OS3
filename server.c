@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
+    printf("%s", schedalg);
     ThreadManager* tm = ThreadManagerCtor(threads, queue_size, max_size, schedalg);
     listenfd = Open_listenfd(port);
 
