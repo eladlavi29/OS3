@@ -153,10 +153,8 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     //Drop random protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
        && strcmp(tm->sched_alg, DROP_RANDOM_SCHEDALG) == 0){
-        printf("waiting queue:\n");
-        print_queue(tm->waitingRequests);
-        printf("busy queue:\n");
-        print_queue(tm->busyRequests);
+        print_queue(tm->waitingRequests,"waiting queue:\n");
+        print_queue(tm->busyRequests, "busy queue:\n");
 
         pthread_mutex_lock(&tm->waitingRequests->m);
 
@@ -168,11 +166,8 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
 
         pthread_mutex_unlock(&tm->waitingRequests->m);
 
-
-        printf("waiting queue:\n");
-        print_queue(tm->waitingRequests);
-        printf("busy queue:\n");
-        print_queue(tm->busyRequests);
+        print_queue(tm->waitingRequests,"waiting queue:\n");
+        print_queue(tm->busyRequests, "busy queue:\n");
     }
 
     //Block and Block flush protocol

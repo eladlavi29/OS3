@@ -36,7 +36,7 @@ void unlocked_dequeue_by_val(struct Queue* q, int fd);
 
 void Queue_dtor(struct Queue* q);
 
-void print_queue(struct Queue* q);
+void print_queue(struct Queue* q, const char* msg);
 
 int getSize(Queue* q);
 
