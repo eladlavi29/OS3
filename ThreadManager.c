@@ -94,6 +94,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
 
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG)){
+        printf("Dropped %d\n", fd);
         Close(fd);
         return;
     }
