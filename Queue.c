@@ -36,6 +36,7 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
 
         printf("%d\n", temp->fd);
         printf("%d\n", q->last->fd);
+        print_queue(q);
     }
     q->queue_size++;
     pthread_cond_signal(&q->c);
