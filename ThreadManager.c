@@ -13,6 +13,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
 
     //Dynamic protocol
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG)){
+        printf("wait what\n");
         tm->queue_size = max_size;
         tm->sched_alg = DROP_TAIL_SCHEDALG;
     }
