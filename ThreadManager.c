@@ -54,8 +54,8 @@ void ThreadManagerDtor(ThreadManager* tm){
 
     free(tm->thread_pool);
 
-    Pthread_cond_destroy(&q->c);
-    Pthread_mutex_destroy(&q->m);
+    Pthread_cond_destroy(&tm->c);
+    Pthread_mutex_destroy(&tm->m);
 
     free(tm);
 }
@@ -112,7 +112,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         Close(dequeue(tm->waitingRequests));
     }
 
-    //Block and Block flush overload protocol
+    //Block and Block flush protocol
     pthread_mutex_lock(&tm->m);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
