@@ -106,6 +106,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     pthread_mutex_init(&unnecessary_lock, NULL);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG))){
+        printf("Block started by %d\n", fd);
         pthread_cond_wait(&tm->c, &unnecessary_lock);
     }
 }
