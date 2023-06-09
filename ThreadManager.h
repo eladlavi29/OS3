@@ -18,13 +18,6 @@
 #define DROP_RANDOM_SCHEDALG "random"
 
 
-struct Stats{
-    struct timeval arrival_time;
-    struct timeval dispatch_interval;
-    struct thread_stats handler_thread_stats;
-};
-typedef struct Stats Stats;
-
 struct thread_stats{
     int handler_thread_id;
     int handler_thread_req_count;
@@ -33,11 +26,18 @@ struct thread_stats{
 };
 typedef struct thread_stats thread_stats;
 
+struct Stats{
+    struct timeval arrival_time;
+    struct timeval dispatch_interval;
+    struct thread_stats handler_thread_stats;
+};
+typedef struct Stats Stats;
+
+
 struct Request{
     int fd;
     Stats* stats;
 };
-
 typedef struct Request Request;
 
 struct ThreadManager{
