@@ -13,7 +13,6 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
 
     //Dynamic protocol
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG) == 0){
-        printf("wait what\n");
         tm->queue_size = max_size;
         tm->sched_alg = DROP_TAIL_SCHEDALG;
     }
@@ -66,7 +65,7 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
 
     //Block flush protocol
-    if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0){
+    if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0 && getSize(tm->busyRequests) == 0){
         pthread_cond_signal(&tm->c);
     }
 
@@ -107,19 +106,18 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
         Close(dequeue(tm->waitingRequests));
-        return;
     }
-
-    enqueue(tm->waitingRequests, fd);
 
     //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
-        && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
+          && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
         printf("Block started by %d\n", fd);
         pthread_cond_wait(&tm->c, &unnecessary_lock);
     }
+
+    enqueue(tm->waitingRequests, fd);
 }
 
 
