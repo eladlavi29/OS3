@@ -25,6 +25,24 @@
 #include <arpa/inet.h>
 
 
+struct ThreadManager{
+    int threads_amount;
+    int queue_size;
+    char* sched_alg;
+    pthread_t* thread_pool;
+    Queue* busyRequests;
+    Queue* waitingRequests;
+    Thread* thread_arr;
+
+    pthread_cond_t  c; // should be initialized
+    pthread_mutex_t m; // should be initialized
+
+};
+
+typedef struct ThreadManager ThreadManager;
+
+
+
 struct Stats{
     struct timeval arrival_time;
     struct timeval dispatch_interval;

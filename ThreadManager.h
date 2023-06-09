@@ -17,24 +17,6 @@
 #define DROP_HEAD_SCHEDALG "dh"
 #define DROP_RANDOM_SCHEDALG "random"
 
-struct ThreadManager{
-    int threads_amount;
-    int queue_size;
-    char* sched_alg;
-    pthread_t* thread_pool;
-    Queue* busyRequests;
-    Queue* waitingRequests;
-    Thread* thread_arr;
-
-    pthread_cond_t  c; // should be initialized
-    pthread_mutex_t m; // should be initialized
-
-};
-
-typedef struct ThreadManager ThreadManager;
-
-
-
 
 typedef struct exeThreadWrapperStruct{
     ThreadManager* tm;

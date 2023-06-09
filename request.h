@@ -1,6 +1,6 @@
 #ifndef __REQUEST_H__
 
-#include "ThreadManager.h"
+#include "segel.h"
 
 void requestHandle(int fd, Stats* stats, ThreadManager* tm);
 
