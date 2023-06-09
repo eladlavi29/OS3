@@ -113,6 +113,9 @@ void dequeue_by_val(struct Queue* q, int fd) {
     }
     else{
         node* to_free = before->next;
+        if(to_free->next==NULL){
+            q->last = before;
+        }
         stats = before->next->stats;
         before->next = to_free->next;
         free(to_free);
@@ -149,6 +152,9 @@ void unlocked_dequeue_by_val(struct Queue* q, int fd) {
     }
     else{
         node* to_free = before->next;
+        if(to_free->next==NULL){
+            q->last = before;
+        }
         stats = before->next->stats;
         before->next = to_free->next;
         free(to_free);
