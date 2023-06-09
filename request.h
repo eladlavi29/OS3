@@ -2,6 +2,8 @@
 
 #include "segel.h"
 
-void requestHandle(int fd, Stats* stats, ThreadManager* tm);
+struct ThreadManager;
+
+void requestHandle(int fd, Stats* stats,struct ThreadManager* tm);
 
 #endif
