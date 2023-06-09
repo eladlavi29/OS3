@@ -23,7 +23,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+#include "Queue.h"
 
 struct ThreadManager{
     int threads_amount;
