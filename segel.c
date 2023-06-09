@@ -94,6 +94,14 @@ pid_t WaitPid(pid_t pid, int *status, int options)
  * Wrappers for Unix I/O routines
  ********************************/
 
+int Gettimeofday(struct timeval *restrict tv, struct timezone *restrict tz){
+    int rc;
+
+    if ((rc = gettimeofday(tv,tz))  < 0)
+        unix_error("gettimeofday error");
+    return rc;
+}
+
 int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
     int rc;

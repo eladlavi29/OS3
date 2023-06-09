@@ -8,10 +8,12 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include "segel.h"
+#include "ThreadManager.h"
 
 typedef struct node {
     int fd;
     struct node * next;
+    Stats* stats;
 } node;
 
 typedef struct Queue {
@@ -26,7 +28,7 @@ Queue* Queue_ctor();
 
 void enqueue(struct Queue* q, int fd);
 
-int dequeue(struct Queue* q);
+Request* dequeue(struct Queue* q);
 
 node* findBefore(node* first, int fd);
 

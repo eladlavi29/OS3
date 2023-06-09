@@ -17,6 +17,29 @@
 #define DROP_HEAD_SCHEDALG "dh"
 #define DROP_RANDOM_SCHEDALG "random"
 
+
+struct Stats{
+    struct timeval arrival_time;
+    struct timeval dispatch_interval;
+    struct thread_stats handler_thread_stats;
+};
+typedef struct Stats Stats;
+
+struct thread_stats{
+    int handler_thread_id;
+    int handler_thread_req_count;
+    int handler_thread_static_req_count;
+    int handler_thread_dynamic_req_count;
+};
+typedef struct thread_stats thread_stats;
+
+struct Request{
+    int fd;
+    Stats* stats;
+};
+
+typedef struct Request Request;
+
 struct ThreadManager{
     int threads_amount;
     int queue_size;
@@ -31,6 +54,9 @@ struct ThreadManager{
 };
 
 typedef struct ThreadManager ThreadManager;
+
+
+
 
 typedef struct exeThreadWrapperStruct{
     ThreadManager* tm;

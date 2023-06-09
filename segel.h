@@ -73,6 +73,7 @@ int Gethostname(char *name, size_t len) ;
 int Setenv(const char *name, const char *value, int overwrite);
 
 /* Unix I/O wrappers */
+int Gettimeofday(struct timeval *restrict tv, struct timezone *restrict tz);
 int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
 int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg);

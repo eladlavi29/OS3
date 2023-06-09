@@ -8,7 +8,7 @@
 void* exeThread(void*);
 
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_size, char* sched_alg){
-    ThreadManager* tm = malloc(sizeof(ThreadManager));;
+    ThreadManager* tm = malloc(sizeof(ThreadManager));
     tm->threads_amount = threads_amount;
 
     //Dynamic protocol
@@ -84,18 +84,28 @@ void removeThread(ThreadManager* tm, int fd){
 void* exeThread(void* temp){
     ThreadManager* tm = (ThreadManager*)temp;
 
-    int new_fd = dequeue(tm->waitingRequests);
+    Request * r = dequeue(tm->waitingRequests);
+    int new_fd = r->fd;
+    Stats* stats = r->stats;
+    free(r);
 
-    enqueue(tm->busyRequests, new_fd);
+    struct timeval *temp = malloc(sizeof(struct timeval));
+    Gettimeofday(temp, NULL);
 
-    requestHandle(new_fd);
+    timeval_subtract(&stats->dispatch_interval, temp, &stats->arrival_time);
+
+    free(temp);
+
+    enqueue(tm->busyRequests, new_fd, stats);
+
+    requestHandle(new_fd, stats);
 
     removeThread(tm, new_fd);
 
     return NULL;
 }
 
-void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
+void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     //Drop tail protocol
     printf("handling %d\n", fd);
 
@@ -109,7 +119,10 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
-        Close(dequeue(tm->waitingRequests));
+        Request * r = dequeue(tm->waitingRequests);
+        Close(r->fd);
+        free(r->stats);
+        free(r);
     }
 
     //Block and Block flush overload protocol
@@ -120,7 +133,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
         pthread_cond_wait(&tm->c, &tm->m);
     }
     pthread_mutex_unlock(&tm->m);
-    enqueue(tm->waitingRequests, fd);
+    enqueue(tm->waitingRequests, fd, stats);
 }
 
 
