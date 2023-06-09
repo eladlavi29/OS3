@@ -5,7 +5,7 @@
 void getargs(int *port, int *threads, int *queue_size, int *max_size, char* schedalg, int argc, char *argv[])
 {
     if (argc < 5) {
-	fprintf(stderr, "Usage: %s <port>\n", argv[0]);
+	fprintf(stderr, "Usage: %s <port> <threads> <queue_size> <schedalg> <max_size (optional)>\n", argv[0]);
 	exit(1);
     }
     *port = atoi(argv[1]);
@@ -28,14 +28,7 @@ int main(int argc, char *argv[])
 
     getargs(&port, &threads, &queue_size, &max_size, schedalg, argc, argv);
 
-    ThreadManager* tm;
-    if(strcmp(schedalg, DYNAMIC_SCHEDALG)){
-        printf("\n\n%d\n\n", max_size);
-        tm = ThreadManagerCtor(threads, max_size, BLOCK_SCHEDALG);
-    }
-    else{
-        tm = ThreadManagerCtor(threads, queue_size, schedalg);
-    }
+    ThreadManager* tm = ThreadManagerCtor(threads, queue_size, max_size, schedalg);
     listenfd = Open_listenfd(port);
 
     while (1) {

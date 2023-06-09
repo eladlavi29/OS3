@@ -14,6 +14,8 @@
 #define BLOCK_FLUSH_SCHEDALG "bf"
 #define DYNAMIC_SCHEDALG "dynamic"
 #define DROP_TAIL_SCHEDALG "dt"
+#define DROP_HEAD_SCHEDALG "dh"
+#define DROP_RANDOM_SCHEDALG "random"
 
 struct ThreadManager{
     int threads_amount;
@@ -34,7 +36,7 @@ typedef struct exeThreadWrapperStruct{
 } exeThreadWrapperStruct;
 
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg);
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_size, char* sched_alg);
 
 void ThreadManagerDtor(ThreadManager* tm);
 

@@ -7,11 +7,29 @@
 
 void* exeThread(void*);
 
-ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, char* sched_alg){
+ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_size, char* sched_alg){
     ThreadManager* tm = malloc(sizeof(ThreadManager));;
     tm->threads_amount = threads_amount;
-    tm->queue_size = queue_size;
-    tm->sched_alg = sched_alg;
+
+    //Dynamic protocol
+    if(strcmp(sched_alg, DYNAMIC_SCHEDALG)){
+        tm->queue_size = max_size;
+        tm->sched_alg = DROP_TAIL_SCHEDALG;
+    }
+    else{
+        tm->queue_size = queue_size;
+
+        if(strcmp(sched_alg, BLOCK_SCHEDALG) ||
+            strcmp(sched_alg, BLOCK_FLUSH_SCHEDALG) ||
+            strcmp(sched_alg, DROP_TAIL_SCHEDALG) ||
+            strcmp(sched_alg, DROP_HEAD_SCHEDALG) ||
+            strcmp(sched_alg, DROP_RANDOM_SCHEDALG))
+            tm->sched_alg = sched_alg;
+        else
+            //Default
+            fprintf(stderr, "Invalid overload protocol\n");
+    }
+
     Pthread_cond_init(&tm->c, NULL);
 
     tm->busyRequests = Queue_ctor();
@@ -42,9 +60,11 @@ void removeThread(ThreadManager* tm, int fd){
     dequeue_by_val(tm->busyRequests, fd);
     Close(fd);
 
+    //Block protocol
     if(strcmp(tm->sched_alg, BLOCK_SCHEDALG))
         pthread_cond_signal(&tm->c);
 
+    //Block flush protocol
     if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) && getSize(tm->waitingRequests) == 0){
         pthread_cond_signal(&tm->c);
     }
@@ -69,11 +89,17 @@ void* exeThread(void* temp){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
+    //Drop tail protocol
+    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+          && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG)){
+        Close(fd);
+    }
+
     enqueue(tm->waitingRequests, fd);
 
     printf("handling %d\n", fd);
 
-    //Block overload protocol
+    //Block and Block flush overload protocol
     pthread_mutex_t unnecessary_lock;
     pthread_mutex_init(&unnecessary_lock, NULL);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
