@@ -38,4 +38,6 @@ void print_queue(struct Queue* q);
 
 int getSize(Queue* q);
 
+void getValues(Queue* q, int* dest);
+
 #endif //OS3_QUEUE_H

@@ -93,14 +93,8 @@ void* exeThread(void* temp){
 }
 
 void dropRandomThread(ThreadManager* tm){
-    int waiting_requests_size = getSize(tm->waitingRequests);
-    int waiting_requests[waiting_requests_size];
-    for(int i = 0; i < waiting_requests_size; ++i){
-        waiting_requests[i] = dequeue(tm->waitingRequests);
-    }
-    for(int i = 0; i < waiting_requests_size; ++i){
-        enqueue(tm->waitingRequests, waiting_requests[i]);
-    }
+    int waiting_requests[getSize(tm->waitingRequests)];
+    getValues(tm->waitingRequests, waiting_requests);
 
     int removed_request = rand() % getSize(tm->waitingRequests);
     dequeue_by_val(tm->waitingRequests, removed_request);

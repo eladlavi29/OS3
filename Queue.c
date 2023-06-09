@@ -135,3 +135,14 @@ int getSize(Queue* q){
     return q->queue_size;
 }
 
+void getValues(Queue* q, int* dest){
+    //dest must be the size of the queue
+    node* curr = q->first;
+    int i = 0;
+    while(curr!=NULL){
+        dest[i] = (int)curr->fd;
+        ++i;
+        curr= curr->next;
+    }
+}
+
