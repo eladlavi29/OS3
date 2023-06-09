@@ -111,12 +111,12 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs, Stats* stats, Th
    sprintf(buf, "HTTP/1.0 200 OK\r\n");
    sprintf(buf, "%sServer: OS-HW3 Web Server\r\n", buf);
 
-    sprintf(buf, "%sHeader: Stat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
-    sprintf(buf, "%sHeader: Stat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
-    sprintf(buf, "%sHeader: Stat-Thread-Id:: %d\r\n", buf, thread->thread_id);
-    sprintf(buf, "%sHeader: Stat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
-    sprintf(buf, "%sHeader: Stat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
-    sprintf(buf, "%sHeader: Stat-Thread-Dynamic:: %d\r\n", buf, thread->dynamic_req_count);
+    sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
+    sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
+    sprintf(buf, "%sStat-Thread-Id:: %d\r\n", buf, thread->thread_id);
+    sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
+    sprintf(buf, "%sStat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
+    sprintf(buf, "%sStat-Thread-Dynamic:: %d\r\n\r\n", buf, thread->dynamic_req_count);
 
     Rio_writen(fd, buf, strlen(buf));
 
@@ -149,14 +149,14 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thre
    sprintf(buf, "HTTP/1.0 200 OK\r\n");
    sprintf(buf, "%sServer: OS-HW3 Web Server\r\n", buf);
    sprintf(buf, "%sContent-Length: %d\r\n", buf, filesize);
-   sprintf(buf, "%sContent-Type: %s\r\n\r\n", buf, filetype);
+   sprintf(buf, "%sContent-Type: %s\r\n", buf, filetype);
 
-   sprintf(buf, "%sHeader: Stat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
-   sprintf(buf, "%sHeader: Stat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
-   sprintf(buf, "%sHeader: Stat-Thread-Id:: %d\r\n", buf, thread->thread_id);
-   sprintf(buf, "%sHeader: Stat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
-   sprintf(buf, "%sHeader: Stat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
-   sprintf(buf, "%sHeader: Stat-Thread-Dynamic:: %d\r\n", buf, thread->dynamic_req_count);
+   sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
+   sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
+   sprintf(buf, "%sStat-Thread-Id:: %d\r\n", buf, thread->thread_id);
+   sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
+   sprintf(buf, "%sStat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
+   sprintf(buf, "%sStat-Thread-Dynamic:: %d\r\n\r\n", buf, thread->dynamic_req_count);
 
 
     Rio_writen(fd, buf, strlen(buf));
