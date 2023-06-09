@@ -89,7 +89,7 @@ void dequeue_by_val(struct Queue* q, int fd) {
     pthread_mutex_lock(&q->m);
     Stats* stats;
     if(q->first==NULL){
-        unix_error("dequeue error");
+        unix_error("dequeue_by_val error, first=NULL");
         pthread_mutex_unlock(&q->m);
         return;
     }
@@ -108,7 +108,7 @@ void dequeue_by_val(struct Queue* q, int fd) {
     }
     node* before = findBefore(q->first, fd);
     if(before==NULL){
-        unix_error("dequeue error");
+        unix_error("dequeue_by_val error, before=NULL");
         pthread_mutex_unlock(&q->m);
         return;
     }
@@ -128,7 +128,7 @@ void dequeue_by_val(struct Queue* q, int fd) {
 void unlocked_dequeue_by_val(struct Queue* q, int fd) {
     Stats* stats;
     if(q->first==NULL){
-        unix_error("dequeue error");
+        unix_error("unlocked_dequeue_by_val error, first=NULL");
         return;
     }
     if(q->first->fd==fd){
@@ -145,7 +145,7 @@ void unlocked_dequeue_by_val(struct Queue* q, int fd) {
     }
     node* before = findBefore(q->first, fd);
     if(before==NULL){
-        unix_error("dequeue error");
+        unix_error("unlocked_dequeue_by_val error, before=NULL");
         return;
     }
     else{
