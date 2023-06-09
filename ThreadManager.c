@@ -75,11 +75,6 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
     }
 
-    printf("waiting queue:\n");
-    print_queue(tm->waitingRequests);
-    printf("busy queue:\n");
-    print_queue(tm->busyRequests);
-
     exeThread((void*)tm);
 }
 
@@ -130,12 +125,21 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
 
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
        && strcmp(tm->sched_alg, DROP_RANDOM_SCHEDALG) == 0){
+        printf("waiting queue:\n");
+        print_queue(tm->waitingRequests);
+        printf("busy queue:\n");
+        print_queue(tm->busyRequests);
+
         printf("Dropped random%d\n", fd);
         int waiting_queue_size = (tm->queue_size - tm->threads_amount + 1) / 2;
-
         for(int i = 0; i < waiting_queue_size; ++i){
             dropRandomThread(tm);
         }
+
+        printf("waiting queue:\n");
+        print_queue(tm->waitingRequests);
+        printf("busy queue:\n");
+        print_queue(tm->busyRequests);
     }
 
     //Block and Block flush protocol
