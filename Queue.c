@@ -107,6 +107,7 @@ void dequeue_by_val(struct Queue* q, int fd) {
     node* before = findBefore(q->first, fd);
     if(before==NULL){
         unix_error("dequeue_by_val error, before=NULL");
+        printf("FD=%d", fd);
         pthread_mutex_unlock(&q->m);
         return;
     }
