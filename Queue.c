@@ -16,9 +16,7 @@ Queue* Queue_ctor(){
 }
 
 void enqueue(struct Queue* q, int fd, Stats* stats) {
-    printf("1\n");
     pthread_mutex_lock(&q->m);
-    printf("2\n");
 
     /* insert from last */
     if(q->last==NULL){
