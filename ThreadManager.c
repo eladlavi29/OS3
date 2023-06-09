@@ -86,12 +86,12 @@ void* exeThread(void* temp){
     Stats* stats = r->stats;
     free(r);
 
-    struct timeval *temp = malloc(sizeof(struct timeval));
-    Gettimeofday(temp, NULL);
+    struct timeval *pickup_time = malloc(sizeof(struct timeval));
+    Gettimeofday(pickup_time, NULL);
 
-    timeval_subtract(&stats->dispatch_interval, temp, &stats->arrival_time);
+    timeval_subtract(&stats->dispatch_interval, pickup_time, &stats->arrival_time);
 
-    free(temp);
+    free(pickup_time);
 
     enqueue(tm->busyRequests, new_fd, stats);
 

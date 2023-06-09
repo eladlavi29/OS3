@@ -26,7 +26,7 @@ typedef struct Queue {
 
 Queue* Queue_ctor();
 
-void enqueue(struct Queue* q, int fd);
+void enqueue(struct Queue* q, int fd, Stats* stats);
 
 Request* dequeue(struct Queue* q);
 
