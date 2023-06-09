@@ -25,8 +25,6 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         q->first->next =NULL;
         q->first->stats = stats;
         q->last = q->first;
-
-        printf("1\n");
     }
     else{
         node * temp = (node * ) malloc(sizeof(node));
@@ -36,7 +34,8 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         q->last->next = temp;
         q->last = temp;
 
-        printf("2\n");
+        printf("%d\n", temp->fd);
+        printf("%d\n", q->last->fd);
     }
     q->queue_size++;
     pthread_cond_signal(&q->c);
