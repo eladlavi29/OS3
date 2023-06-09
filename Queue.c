@@ -115,6 +115,10 @@ void Queue_dtor(struct Queue* q){
         curr = curr->next;
         free(to_free);
     }
+
+    Pthread_cond_destroy(&q->c);
+    Pthread_mutex_destroy(&q->m);
+
     free(q);
 }
 

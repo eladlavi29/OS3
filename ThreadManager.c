@@ -31,6 +31,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     }
 
     Pthread_cond_init(&tm->c, NULL);
+    Pthread_mutex_init(&tm->m, NULL);
 
     tm->busyRequests = Queue_ctor();
     tm->waitingRequests = Queue_ctor();
@@ -52,6 +53,9 @@ void ThreadManagerDtor(ThreadManager* tm){
     }
 
     free(tm->thread_pool);
+
+    Pthread_cond_destroy(&q->c);
+    Pthread_mutex_destroy(&q->m);
 
     free(tm);
 }
@@ -109,14 +113,13 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd){
     }
 
     //Block and Block flush overload protocol
-    pthread_mutex_t unnecessary_lock;
-    pthread_mutex_init(&unnecessary_lock, NULL);
+    pthread_mutex_lock(&tm->m);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
         printf("Block started by %d\n", fd);
-        pthread_cond_wait(&tm->c, &unnecessary_lock);
+        pthread_cond_wait(&tm->c, &tm->m);
     }
-
+    pthread_mutex_unlock(&tm->m);
     enqueue(tm->waitingRequests, fd);
 }
 

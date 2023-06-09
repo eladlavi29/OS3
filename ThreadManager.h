@@ -25,7 +25,9 @@ struct ThreadManager{
     Queue* busyRequests;
     Queue* waitingRequests;
 
-    pthread_cond_t  c;
+    pthread_cond_t  c; // should be initialized
+    pthread_mutex_t m; // should be initialized
+
 };
 
 typedef struct ThreadManager ThreadManager;
