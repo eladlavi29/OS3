@@ -71,6 +71,15 @@ void removeThread(ThreadManager* tm, int fd){
     dequeue_by_val(tm->busyRequests, fd);
     Close(fd);
 
+    //Block flush protocol
+    pthread_mutex_lock(&tm->busyRequests->m);
+    pthread_mutex_lock(&tm->waitingRequests->m);
+    if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0 && getSize(tm->busyRequests) == 0){
+        pthread_cond_signal(&tm->c);
+    }
+    pthread_mutex_unlock(&tm->busyRequests->m);
+    pthread_mutex_unlock(&tm->waitingRequests->m);
+
     exeThread((void*)tm);
 }
 
@@ -98,16 +107,6 @@ void* exeThread(void* temp){
     //Block protocol
     if(strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0)
         pthread_cond_signal(&tm->c);
-
-    //Block flush protocol
-    pthread_mutex_lock(&tm->busyRequests->m);
-    pthread_mutex_lock(&tm->waitingRequests->m);
-    if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0 && getSize(tm->busyRequests) == 0){
-        pthread_cond_signal(&tm->c);
-    }
-    pthread_mutex_unlock(&tm->busyRequests->m);
-    pthread_mutex_unlock(&tm->waitingRequests->m);
-
 
     struct timeval *pickup_time = malloc(sizeof(struct timeval));
     Gettimeofday(pickup_time, NULL);
