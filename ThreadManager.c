@@ -76,9 +76,15 @@ void removeThread(ThreadManager* tm, int fd){
         pthread_cond_signal(&tm->c);
 
     //Block flush protocol
+
+    pthread_mutex_lock(&tm->busyRequests->m);
+    pthread_mutex_lock(&tm->waitingRequests->m);
+
     if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0 && getSize(tm->busyRequests) == 0){
         pthread_cond_signal(&tm->c);
     }
+    pthread_mutex_unlock(&tm->busyRequests->m);
+    pthread_mutex_unlock(&tm->waitingRequests->m);
 
     exeThread((void*)tm);
 }
@@ -90,7 +96,7 @@ void timeval_subtract(struct timeval *elapsed, struct timeval *pickup, struct ti
     if ((elapsed->tv_usec = pickup->tv_usec - arrival->tv_usec) < 0)
     {
         elapsed->tv_usec += 1000000;
-        elapsed->tv_sec--; // borrow
+        elapsed->tv_sec--;
     }
 
     return;
