@@ -17,10 +17,8 @@ Queue* Queue_ctor(){
 
 void enqueue(struct Queue* q, int fd, Stats* stats) {
     pthread_mutex_lock(&q->m);
-    printf("start, fd=%d\n", fd);
     /* insert from last */
     if(q->last==NULL){
-        printf("%s","BAD\n");
         q->first = (node * ) malloc(sizeof(node));
         q->first->fd = fd;
         q->first->next =NULL;
@@ -28,7 +26,6 @@ void enqueue(struct Queue* q, int fd, Stats* stats) {
         q->last = q->first;
     }
     else{
-        printf("GOOD, last_fd=%d\n", q->last->fd);
         node * temp = (node * ) malloc(sizeof(node));
         temp->next = NULL;
         temp->fd = fd;
@@ -50,8 +47,8 @@ Request* dequeue(struct Queue* q) {
     }
     /* remove from first */
     if(q->first==NULL){
-        unix_error("dequeue error");
         pthread_mutex_unlock(&q->m);
+        unix_error("dequeue error");
         return NULL;
     }
     else{
@@ -87,8 +84,8 @@ void dequeue_by_val(struct Queue* q, int fd) {
     pthread_mutex_lock(&q->m);
     Stats* stats;
     if(q->first==NULL){
-        unix_error("dequeue_by_val error, first=NULL");
         pthread_mutex_unlock(&q->m);
+        unix_error("dequeue_by_val error, first=NULL");
         return;
     }
     if(q->first->fd==fd){
@@ -106,9 +103,8 @@ void dequeue_by_val(struct Queue* q, int fd) {
     }
     node* before = findBefore(q->first, fd);
     if(before==NULL){
-        printf("FD=%d", fd);
-        unix_error("dequeue_by_val error, before=NULL");
         pthread_mutex_unlock(&q->m);
+        unix_error("dequeue_by_val error, before=NULL");
         return;
     }
     else{

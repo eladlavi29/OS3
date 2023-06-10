@@ -138,14 +138,18 @@ void dropRandomThread(ThreadManager* tm){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     printf("handling %d\n", fd);
-
+    pthread_mutex_lock(&tm->busyRequests->m);
+    pthread_mutex_lock(&tm->waitingRequests->m);
     //Drop tail protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_TAIL_SCHEDALG) == 0){
         printf("Dropped tail %d\n", fd);
         Close(fd);
+        pthread_mutex_unlock(&tm->busyRequests->m);
+        pthread_mutex_unlock(&tm->waitingRequests->m);
         return;
     }
+
 
     //Drop head protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
@@ -163,15 +167,11 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         print_queue(tm->waitingRequests,"waiting queue:\n");
         print_queue(tm->busyRequests, "busy queue:\n");
 
-        pthread_mutex_lock(&tm->waitingRequests->m);
-
         printf("Dropped random\n");
         int removed_requests_amount = (tm->queue_size - tm->threads_amount + 1) / 2;
         for(int i = 0; i < removed_requests_amount; ++i){
             dropRandomThread(tm);
         }
-
-        pthread_mutex_unlock(&tm->waitingRequests->m);
 
         print_queue(tm->waitingRequests,"waiting queue:\n");
         print_queue(tm->busyRequests, "busy queue:\n");
@@ -182,10 +182,18 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
         printf("Block started by %d\n", fd);
+        pthread_mutex_unlock(&tm->busyRequests->m);
+        pthread_mutex_unlock(&tm->waitingRequests->m);
         pthread_cond_wait(&tm->c, &tm->m);
+        pthread_mutex_lock(&tm->busyRequests->m);
+        pthread_mutex_lock(&tm->waitingRequests->m);
     }
 
     pthread_mutex_unlock(&tm->m);
+
+    pthread_mutex_unlock(&tm->busyRequests->m);
+    pthread_mutex_unlock(&tm->waitingRequests->m);
+
     enqueue(tm->waitingRequests, fd,stats);
 
     print_queue(tm->waitingRequests,"waiting queue:\n");
