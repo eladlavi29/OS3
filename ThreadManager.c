@@ -72,6 +72,7 @@ void removeThread(ThreadManager* tm, int fd){
     Close(fd);
 
     //Block flush protocol
+    pthread_mutex_lock(&tm->m);
     pthread_mutex_lock(&tm->busyRequests->m);
     pthread_mutex_lock(&tm->waitingRequests->m);
     if(strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 && getSize(tm->waitingRequests) == 0 && getSize(tm->busyRequests) == 0){
@@ -79,6 +80,7 @@ void removeThread(ThreadManager* tm, int fd){
     }
     pthread_mutex_unlock(&tm->busyRequests->m);
     pthread_mutex_unlock(&tm->waitingRequests->m);
+    pthread_mutex_unlock(&tm->m);
 
     exeThread((void*)tm);
 }
@@ -142,6 +144,7 @@ void dropRandomThread(ThreadManager* tm){
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     printf("handling %d\n", fd);
+    pthread_mutex_lock(&tm->m);
     pthread_mutex_lock(&tm->busyRequests->m);
     pthread_mutex_lock(&tm->waitingRequests->m);
     //Drop tail protocol
@@ -151,6 +154,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         Close(fd);
         pthread_mutex_unlock(&tm->busyRequests->m);
         pthread_mutex_unlock(&tm->waitingRequests->m);
+        pthread_mutex_unlock(&tm->m);
         return;
     }
 
@@ -160,7 +164,9 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
         pthread_mutex_unlock(&tm->waitingRequests->m);
+        pthread_mutex_unlock(&tm->m);
         Request * r = dequeue(tm->waitingRequests);
+        pthread_mutex_lock(&tm->m);
         pthread_mutex_lock(&tm->waitingRequests->m);
         Close(r->fd);
         free(r->stats);
@@ -184,7 +190,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     }
 
     //Block and Block flush protocol
-    pthread_mutex_lock(&tm->m);
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
           && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
         printf("Block started by %d\n", fd);
@@ -196,7 +201,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     }
 
     pthread_mutex_unlock(&tm->m);
-
     pthread_mutex_unlock(&tm->busyRequests->m);
     pthread_mutex_unlock(&tm->waitingRequests->m);
 
