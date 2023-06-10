@@ -161,7 +161,9 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
         printf("Dropped head%d\n", fd);
+        pthread_mutex_unlock(&tm->waitingRequests->m);
         Request * r = dequeue(tm->waitingRequests);
+        pthread_mutex_lock(&tm->waitingRequests->m);
         Close(r->fd);
         free(r->stats);
         free(r);
