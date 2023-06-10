@@ -200,9 +200,9 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         pthread_mutex_lock(&tm->waitingRequests->m);
     }
 
-    pthread_mutex_unlock(&tm->m);
     pthread_mutex_unlock(&tm->busyRequests->m);
     pthread_mutex_unlock(&tm->waitingRequests->m);
+    pthread_mutex_unlock(&tm->m);
 
     enqueue(tm->waitingRequests, fd,stats);
 
