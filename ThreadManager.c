@@ -27,7 +27,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
             tm->sched_alg = sched_alg;
         else
             //Default
-            fprintf(stderr, "Invalid overload protocol\n");
+            //fprintf(stderr, "Invalid overload protocol\n");
     }
 
     Pthread_cond_init(&tm->c, NULL);
