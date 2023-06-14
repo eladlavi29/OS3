@@ -14,10 +14,11 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     //Dynamic protocol
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG) == 0){
         tm->queue_size = max_size;
-        tm->sched_alg = DROP_TAIL_SCHEDALG;
+        tm->queue_size_dynamic = queue_size;
     }
     else{
         tm->queue_size = queue_size;
+        tm->queue_size_dynamic = queue_size;
 
         if(strcmp(sched_alg, BLOCK_SCHEDALG) == 0 ||
             strcmp(sched_alg, BLOCK_FLUSH_SCHEDALG) == 0 ||
@@ -150,7 +151,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         return;
     }
 
-
     //Drop head protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
         && strcmp(tm->sched_alg, DROP_HEAD_SCHEDALG) == 0){
@@ -162,6 +162,22 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         Close(r->fd);
         free(r->stats);
         free(r);
+    }
+
+    //Dynamic protocol
+    if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size_dynamic
+       && strcmp(tm->sched_alg, DYNAMIC_SCHEDALG) == 0){
+        Close(fd);
+        if(tm->queue_size_dynamic < tm->queue_size){
+            tm->queue_size_dynamic = tm->queue_size_dynamic + 1;
+        }
+        if(tm->queue_size_dynamic == tm->queue_size){
+            tm->sched_alg = DROP_TAIL_SCHEDALG;
+        }
+        pthread_mutex_unlock(&tm->busyRequests->m);
+        pthread_mutex_unlock(&tm->waitingRequests->m);
+        pthread_mutex_unlock(&tm->m);
+        return;
     }
 
     //Drop random protocol
@@ -176,12 +192,21 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
 
     //Block and Block flush protocol
     while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
-          && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0 || strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
+          && (strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0)){
         pthread_mutex_unlock(&tm->busyRequests->m);
         pthread_mutex_unlock(&tm->waitingRequests->m);
         pthread_cond_wait(&tm->c, &tm->m);
         pthread_mutex_lock(&tm->busyRequests->m);
         pthread_mutex_lock(&tm->waitingRequests->m);
+    }
+
+    while(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size
+          && (strcmp(tm->sched_alg, BLOCK_FLUSH_SCHEDALG) == 0)){
+        pthread_mutex_unlock(&tm->busyRequests->m);
+        pthread_mutex_unlock(&tm->waitingRequests->m);
+        pthread_cond_wait(&tm->c, &tm->m);
+        pthread_mutex_unlock(&tm->m);
+        return;
     }
 
     pthread_mutex_unlock(&tm->busyRequests->m);

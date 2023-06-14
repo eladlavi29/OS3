@@ -20,6 +20,7 @@
 struct ThreadManager{
     int threads_amount;
     int queue_size;
+    int queue_size_dynamic;
     char* sched_alg;
     pthread_t* thread_pool;
     Queue* busyRequests;
