@@ -27,9 +27,33 @@ void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longm
    Rio_writen(fd, buf, strlen(buf));
    printf("%s", buf);
 
-   sprintf(buf, "Content-Length: %lu\r\n\r\n", strlen(body));
+   sprintf(buf, "Content-Length: %lu\r\n", strlen(body));
    Rio_writen(fd, buf, strlen(buf));
    printf("%s", buf);
+
+    sprintf(buf, "Stat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
+
+    sprintf(buf, "Stat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
+
+    sprintf(buf, "Stat-Thread-Id:: %d\r\n", buf, thread->thread_id);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
+
+    sprintf(buf, "Stat-Thread-Count:: %d\r\n", buf, thread->req_count);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
+
+    sprintf(buf, "Stat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
+
+    sprintf(buf, "Stat-Thread-Dynamic:: %d\r\n\r\n", buf, thread->dynamic_req_count);
+    Rio_writen(fd, buf, strlen(buf));
+    printf("%s", buf);
 
    // Write out the content
    Rio_writen(fd, body, strlen(body));
@@ -114,7 +138,7 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs, Stats* stats, Th
     sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
     sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
     sprintf(buf, "%sStat-Thread-Id:: %d\r\n", buf, thread->thread_id);
-    sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
+    sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, thread->req_count);
     sprintf(buf, "%sStat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
     sprintf(buf, "%sStat-Thread-Dynamic:: %d\r\n", buf, thread->dynamic_req_count);
 
@@ -154,7 +178,7 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thre
    sprintf(buf, "%sStat-Req-Arrival:: %lu.%06lu\r\n", buf, stats->arrival_time.tv_sec, stats->arrival_time.tv_usec);
    sprintf(buf, "%sStat-Req-Dispatch:: %lu.%06lu\r\n", buf, stats->dispatch_interval.tv_sec, stats->dispatch_interval.tv_usec);
    sprintf(buf, "%sStat-Thread-Id:: %d\r\n", buf, thread->thread_id);
-   sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, (thread->dynamic_req_count+thread->static_req_count));
+   sprintf(buf, "%sStat-Thread-Count:: %d\r\n", buf, thread->req_count);
    sprintf(buf, "%sStat-Thread-Static:: %d\r\n", buf, thread->static_req_count);
    sprintf(buf, "%sStat-Thread-Dynamic:: %d\r\n\r\n", buf, thread->dynamic_req_count);
 
@@ -198,12 +222,8 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
        }
    }
 
-   if(is_static){
-       tm->thread_arr[ind].static_req_count = tm->thread_arr[ind].static_req_count + 1;
-   }
-   else{
-       tm->thread_arr[ind].dynamic_req_count = tm->thread_arr[ind].dynamic_req_count + 1;
-   }
+   tm->thread_arr[ind].req_count = tm->thread_arr[ind].req_count + 1;
+
 
    if (stat(filename, &sbuf) < 0) {
       requestError(fd, filename, "404", "Not found", "OS-HW3 Server could not find this file");
@@ -215,12 +235,14 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
          requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not read this file");
          return;
       }
+      tm->thread_arr[ind].static_req_count = tm->thread_arr[ind].static_req_count + 1;
       requestServeStatic(fd, filename, sbuf.st_size, stats, &tm->thread_arr[ind]);
    } else {
       if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)) {
          requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not run this CGI program");
          return;
       }
+      tm->thread_arr[ind].dynamic_req_count = tm->thread_arr[ind].dynamic_req_count + 1;
       requestServeDynamic(fd, filename, cgiargs, stats, &tm->thread_arr[ind]);
    }
 }

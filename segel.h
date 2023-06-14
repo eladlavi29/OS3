@@ -43,6 +43,7 @@ struct Thread{
     int thread_id;
     int static_req_count;
     int dynamic_req_count;
+    int req_count;
 };
 typedef struct Thread Thread;
 

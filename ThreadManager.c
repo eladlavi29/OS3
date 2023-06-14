@@ -43,6 +43,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
         tm->thread_arr[i].thread = tm->thread_pool[i];
         tm->thread_arr[i].dynamic_req_count = 0;
         tm->thread_arr[i].static_req_count = 0;
+        tm->thread_arr[i].req_count = 0;
         tm->thread_arr[i].thread_id = i;
     }
 
