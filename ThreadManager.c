@@ -82,6 +82,10 @@ void removeThread(ThreadManager* tm, int fd){
     pthread_mutex_unlock(&tm->waitingRequests->m);
     pthread_mutex_unlock(&tm->m);
 
+    //Block protocol
+    if(strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0)
+        pthread_cond_signal(&tm->c);
+
     exeThread((void*)tm);
 }
 
