@@ -224,6 +224,7 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
 
    is_static = requestParseURI(uri, filename, cgiargs);
 
+
    if (stat(filename, &sbuf) < 0) {
       requestError(fd, filename, "404", "Not found", "OS-HW3 Server could not find this file", stats, &tm->thread_arr[ind]);
       return;
