@@ -7,7 +7,7 @@
 #include "ThreadManager.h"
 
 // requestError(      fd,    filename,        "404",    "Not found", "OS-HW3 Server could not find this file");
-void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg, , Stats* stats, Thread* thread)
+void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg, Stats* stats, Thread* thread)
 {
    char buf[MAXLINE], body[MAXBUF];
 
