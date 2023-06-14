@@ -51,7 +51,7 @@ void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longm
     Rio_writen(fd, buf, strlen(buf));
     printf("%s", buf);
 
-    sprintf(buf, "Stat-Thread-Dynamic:: %d\r\n\r\n" thread->dynamic_req_count);
+    sprintf(buf, "Stat-Thread-Dynamic:: %d\r\n\r\n", thread->dynamic_req_count);
     Rio_writen(fd, buf, strlen(buf));
     printf("%s", buf);
 
