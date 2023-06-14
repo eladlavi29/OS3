@@ -7,7 +7,7 @@
 #include "ThreadManager.h"
 
 // requestError(      fd,    filename,        "404",    "Not found", "OS-HW3 Server could not find this file");
-void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg) 
+void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg, , Stats* stats, Thread* thread)
 {
    char buf[MAXLINE], body[MAXBUF];
 
@@ -206,40 +206,39 @@ void requestHandle(int fd, Stats* stats, ThreadManager* tm)
 
    printf("%s %s %s\n", method, uri, version);
 
+    int ind = -1;
+
+    for(int i = 0; i<tm->threads_amount; i++){
+        if(tm->thread_arr[i].thread == pthread_self()){
+            ind = i;
+        }
+    }
+
+    tm->thread_arr[ind].req_count = tm->thread_arr[ind].req_count + 1;
+
    if (strcasecmp(method, "GET")) {
-      requestError(fd, method, "501", "Not Implemented", "OS-HW3 Server does not implement this method");
+      requestError(fd, method, "501", "Not Implemented", "OS-HW3 Server does not implement this method", stats, &tm->thread_arr[ind]);
       return;
    }
    requestReadhdrs(&rio);
 
    is_static = requestParseURI(uri, filename, cgiargs);
 
-   int ind = -1;
-
-   for(int i = 0; i<tm->threads_amount; i++){
-       if(tm->thread_arr[i].thread == pthread_self()){
-           ind = i;
-       }
-   }
-
-   tm->thread_arr[ind].req_count = tm->thread_arr[ind].req_count + 1;
-
-
    if (stat(filename, &sbuf) < 0) {
-      requestError(fd, filename, "404", "Not found", "OS-HW3 Server could not find this file");
+      requestError(fd, filename, "404", "Not found", "OS-HW3 Server could not find this file", stats, &tm->thread_arr[ind]);
       return;
    }
 
    if (is_static) {
       if (!(S_ISREG(sbuf.st_mode)) || !(S_IRUSR & sbuf.st_mode)) {
-         requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not read this file");
+         requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not read this file", stats, &tm->thread_arr[ind]);
          return;
       }
       tm->thread_arr[ind].static_req_count = tm->thread_arr[ind].static_req_count + 1;
       requestServeStatic(fd, filename, sbuf.st_size, stats, &tm->thread_arr[ind]);
    } else {
       if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)) {
-         requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not run this CGI program");
+         requestError(fd, filename, "403", "Forbidden", "OS-HW3 Server could not run this CGI program", stats, &tm->thread_arr[ind]);
          return;
       }
       tm->thread_arr[ind].dynamic_req_count = tm->thread_arr[ind].dynamic_req_count + 1;
