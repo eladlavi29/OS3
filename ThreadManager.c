@@ -110,10 +110,6 @@ void* exeThread(void* temp){
     Stats* stats = r->stats;
     free(r);
 
-    //Block protocol
-    if(strcmp(tm->sched_alg, BLOCK_SCHEDALG) == 0)
-        pthread_cond_signal(&tm->c);
-
     struct timeval *pickup_time = malloc(sizeof(struct timeval));
     Gettimeofday(pickup_time, NULL);
 
