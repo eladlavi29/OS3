@@ -3,7 +3,6 @@
 //
 
 #include "Queue.h"
-#include "segel.h"
 
 Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
