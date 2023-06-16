@@ -4,8 +4,6 @@
 
 #include "request.h"
 
-struct ThreadManager;
-
 // requestError(      fd,    filename,        "404",    "Not found", "OS-HW3 Server could not find this file");
 void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg, Stats* stats, Thread* thread)
 {
@@ -192,7 +190,7 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thre
 }
 
 // handle a request
-void requestHandle(int fd, Stats* stats, ThreadManager* tm)
+void requestHandle(int fd, Stats* stats, struct ThreadManager* tm)
 {
    int is_static;
    struct stat sbuf;
