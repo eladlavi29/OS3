@@ -1,7 +1,7 @@
 #ifndef __REQUEST_H__
 
 #include "segel.h"
-
+#include "Queue.h"
 
 struct ThreadManager{
     int threads_amount;
