@@ -8,7 +8,10 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include "segel.h"
-
+struct ThreadManager;
+struct Stats;
+struct Request;
+struct Thread;
 typedef struct node {
     int fd;
     struct node * next;
