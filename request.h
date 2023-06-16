@@ -1,8 +1,8 @@
 #ifndef __REQUEST_H__
 
 #include "segel.h"
-#include "ThreadManager.h"
 
+struct ThreadManager;
 
 struct Stats{
     struct timeval arrival_time;
