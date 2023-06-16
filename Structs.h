@@ -5,6 +5,13 @@
 #ifndef OS3_STRUCTS_H
 #define OS3_STRUCTS_H
 
+
+struct Stats{
+    struct timeval arrival_time;
+    struct timeval dispatch_interval;
+};
+typedef struct Stats Stats;
+
 typedef struct node {
     int fd;
     struct node * next;
@@ -18,13 +25,6 @@ typedef struct Queue {
     node *first;
     node *last;
 } Queue;
-
-
-struct Stats{
-    struct timeval arrival_time;
-    struct timeval dispatch_interval;
-};
-typedef struct Stats Stats;
 
 
 struct Request{
