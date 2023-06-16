@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         clientlen = sizeof(clientaddr);
         connfd = Accept(listenfd, (SA *)&clientaddr, (socklen_t *) &clientlen);
 
-        Gettimeofday(&stats->arrival_time, NULL);
+        gettimeofday(&stats->arrival_time, NULL);
 
         ThreadManagerHandleRequest(tm, connfd, stats);
     }
