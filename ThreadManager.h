@@ -7,7 +7,6 @@
 
 #include <stdbool.h>
 #include "segel.h"
-#include "request.h"
 #include "Queue.h"
 
 #define BLOCK_SCHEDALG "block"
