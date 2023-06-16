@@ -17,28 +17,6 @@
 #define DROP_HEAD_SCHEDALG "dh"
 #define DROP_RANDOM_SCHEDALG "random"
 
-struct Stats{
-    struct timeval arrival_time;
-    struct timeval dispatch_interval;
-};
-typedef struct Stats Stats;
-
-
-struct Request{
-    int fd;
-    Stats* stats;
-};
-typedef struct Request Request;
-
-struct Thread{
-    pthread_t thread;
-    int thread_id;
-    int static_req_count;
-    int dynamic_req_count;
-    int req_count;
-};
-typedef struct Thread Thread;
-
 struct ThreadManager{
     int threads_amount;
     int queue_size;
