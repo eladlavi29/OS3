@@ -1,8 +1,7 @@
 #ifndef __REQUEST_H__
 
 #include "segel.h"
-
-struct ThreadManager;
+#include "ThreadManager.h"
 
 
 struct Stats{
