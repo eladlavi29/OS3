@@ -25,28 +25,6 @@
 #include <arpa/inet.h>
 
 
-struct Stats{
-    struct timeval arrival_time;
-    struct timeval dispatch_interval;
-};
-typedef struct Stats Stats;
-
-
-struct Request{
-    int fd;
-    Stats* stats;
-};
-typedef struct Request Request;
-
-struct Thread{
-    pthread_t thread;
-    int thread_id;
-    int static_req_count;
-    int dynamic_req_count;
-    int req_count;
-};
-typedef struct Thread Thread;
-
 /* Default file permissions are DEF_MODE & ~DEF_UMASK */
 /* $begin createmasks */
 #define DEF_MODE   S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
@@ -95,16 +73,6 @@ int Gethostname(char *name, size_t len) ;
 int Setenv(const char *name, const char *value, int overwrite);
 
 /* Unix I/O wrappers */
-int Gettimeofday(struct timeval *restrict tv, struct timezone *restrict tz);
-int Pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
-int Pthread_cond_init(pthread_cond_t *cond, pthread_condattr_t *cond_attr);
-int Pthread_create(pthread_t *thread, pthread_attr_t *attr, void* (*start_routine)(void*), void *arg);
-void Pthread_exit(void* retval);
-void Pthread_cancel(pthread_t thread);
-int Pthread_cond_destroy(pthread_cond_t *cond);
-int Pthread_mutex_destroy(pthread_mutex_t *mutex);
-pthread_t Pthread_self();
-int Pthread_equal(pthread_t t1, pthread_t t2);
 int Open(const char *pathname, int flags, mode_t mode);
 ssize_t Read(int fd, void *buf, size_t count);
 ssize_t Write(int fd, const void *buf, size_t count);
