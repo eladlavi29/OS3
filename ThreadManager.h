@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "segel.h"
 #include "Queue.h"
+#include "Structs.h"
 
 #define BLOCK_SCHEDALG "block"
 #define BLOCK_FLUSH_SCHEDALG "bf"
@@ -15,29 +16,6 @@
 #define DROP_TAIL_SCHEDALG "dt"
 #define DROP_HEAD_SCHEDALG "dh"
 #define DROP_RANDOM_SCHEDALG "random"
-
-
-struct ThreadManager{
-    int threads_amount;
-    int queue_size;
-    int queue_size_dynamic;
-    char* sched_alg;
-    pthread_t* thread_pool;
-    Queue* busyRequests;
-    Queue* waitingRequests;
-    Thread* thread_arr;
-
-    pthread_cond_t  c; // should be initialized
-    pthread_mutex_t m; // should be initialized
-
-};
-
-typedef struct ThreadManager ThreadManager;
-
-typedef struct exeThreadWrapperStruct{
-    ThreadManager* tm;
-    int fd;
-} exeThreadWrapperStruct;
 
 
 ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_size, char* sched_alg);

@@ -9,20 +9,8 @@
 #include <stdlib.h>
 #include "segel.h"
 #include "request.h"
+#include "Structs.h"
 
-typedef struct node {
-    int fd;
-    struct node * next;
-    Stats* stats;
-} node;
-
-typedef struct Queue {
-    pthread_cond_t  c; // should be initialized
-    pthread_mutex_t m; // should be initialized
-    int queue_size;
-    node *first;
-    node *last;
-} Queue;
 
 Queue* Queue_ctor();
 
