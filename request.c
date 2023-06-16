@@ -190,7 +190,7 @@ void requestServeStatic(int fd, char *filename, int filesize, Stats* stats, Thre
 }
 
 // handle a request
-void requestHandle(int fd, Stats* stats, struct ThreadManager* tm)
+void requestHandle(int fd, Stats* stats, ThreadManager* tm)
 {
    int is_static;
    struct stat sbuf;
