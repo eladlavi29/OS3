@@ -1,24 +1,8 @@
 #ifndef __REQUEST_H__
 
 #include "segel.h"
-#include "Queue.h"
 
-struct ThreadManager{
-    int threads_amount;
-    int queue_size;
-    int queue_size_dynamic;
-    char* sched_alg;
-    pthread_t* thread_pool;
-    Queue* busyRequests;
-    Queue* waitingRequests;
-    Thread* thread_arr;
-
-    pthread_cond_t  c; // should be initialized
-    pthread_mutex_t m; // should be initialized
-
-};
-
-typedef struct ThreadManager ThreadManager;
+struct ThreadManager;
 
 struct Stats{
     struct timeval arrival_time;
@@ -42,6 +26,6 @@ struct Thread{
 };
 typedef struct Thread Thread;
 
-void requestHandle(int fd, Stats* stats, ThreadManager* tm);
+void requestHandle(int fd, Stats* stats,struct ThreadManager* tm);
 
 #endif
