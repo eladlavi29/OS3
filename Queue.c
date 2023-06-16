@@ -8,8 +8,8 @@
 Queue* Queue_ctor(){
     Queue* q = (Queue * ) malloc(sizeof(Queue));
     q->queue_size = 0;
-    Pthread_cond_init(&q->c, NULL);
-    Pthread_mutex_init(&q->m, NULL);
+    pthread_cond_init(&q->c, NULL);
+    pthread_mutex_init(&q->m, NULL);
     q->first = NULL;
     q->last = NULL;
     return q;
@@ -169,8 +169,8 @@ void Queue_dtor(struct Queue* q){
         free(to_free);
     }
 
-    Pthread_cond_destroy(&q->c);
-    Pthread_mutex_destroy(&q->m);
+    pthread_cond_destroy(&q->c);
+    pthread_mutex_destroy(&q->m);
 
     free(q);
 }

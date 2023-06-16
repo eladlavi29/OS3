@@ -31,8 +31,8 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
             fprintf(stderr, "Invalid overload protocol\n");
     }
 
-    Pthread_cond_init(&tm->c, NULL);
-    Pthread_mutex_init(&tm->m, NULL);
+    pthread_cond_init(&tm->c, NULL);
+    pthread_mutex_init(&tm->m, NULL);
 
     tm->busyRequests = Queue_ctor();
     tm->waitingRequests = Queue_ctor();
@@ -40,7 +40,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     tm->thread_pool = (pthread_t*)malloc(threads_amount * sizeof(pthread_t));
     tm->thread_arr = (Thread*)malloc(threads_amount * sizeof(Thread));
     for(int i = 0; i<threads_amount; i++){
-        Pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
+        pthread_create(&tm->thread_pool[i], NULL, exeThread, (void*)tm);
         tm->thread_arr[i].thread = tm->thread_pool[i];
         tm->thread_arr[i].dynamic_req_count = 0;
         tm->thread_arr[i].static_req_count = 0;
@@ -58,13 +58,13 @@ void ThreadManagerDtor(ThreadManager* tm){
     Queue_dtor(tm->waitingRequests);
 
     for(int i = 0; i<tm->threads_amount; i++){
-        Pthread_cancel(tm->thread_pool[i]);
+        pthread_cancel(tm->thread_pool[i]);
     }
 
     free(tm->thread_pool);
 
-    Pthread_cond_destroy(&tm->c);
-    Pthread_mutex_destroy(&tm->m);
+    pthread_cond_destroy(&tm->c);
+    pthread_mutex_destroy(&tm->m);
 
     free(tm);
 }
@@ -113,7 +113,7 @@ void* exeThread(void* temp){
     free(r);
 
     struct timeval *pickup_time = malloc(sizeof(struct timeval));
-    Gettimeofday(pickup_time, NULL);
+    gettimeofday(pickup_time, NULL);
 
     timeval_subtract(&stats->dispatch_interval, pickup_time, &stats->arrival_time);
 
