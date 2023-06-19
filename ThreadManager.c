@@ -165,9 +165,9 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size_dynamic
        && strcmp(tm->sched_alg, DYNAMIC_SCHEDALG) == 0){
         Close(fd);
-        if(tm->queue_size_dynamic < tm->queue_size){
-            tm->queue_size_dynamic = tm->queue_size_dynamic + 1;
-        }
+//        if(tm->queue_size_dynamic < tm->queue_size){
+//            tm->queue_size_dynamic = tm->queue_size_dynamic + 1;
+//        }
         if(tm->queue_size_dynamic == tm->queue_size){
             tm->sched_alg = DROP_TAIL_SCHEDALG;
         }
