@@ -168,12 +168,15 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         if(tm->queue_size_dynamic < tm->queue_size){
             tm->queue_size_dynamic = tm->queue_size_dynamic + 1;
         }
-//        if(tm->queue_size_dynamic == tm->queue_size){
-//            tm->sched_alg = DROP_TAIL_SCHEDALG;
-//        }
+        if(tm->queue_size_dynamic == tm->queue_size){
+            tm->sched_alg = DROP_TAIL_SCHEDALG;
+        }
         pthread_mutex_unlock(&tm->busyRequests->m);
         pthread_mutex_unlock(&tm->waitingRequests->m);
         pthread_mutex_unlock(&tm->m);
+
+        printf("%s","HERE!\n");
+
         return;
     }
 
