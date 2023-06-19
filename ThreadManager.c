@@ -135,6 +135,8 @@ void dropRandomThread(ThreadManager* tm){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
+    printf("START\n");
+
     pthread_mutex_lock(&tm->m);
     pthread_mutex_lock(&tm->busyRequests->m);
     pthread_mutex_lock(&tm->waitingRequests->m);
