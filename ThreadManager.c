@@ -8,6 +8,8 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     ThreadManager* tm = malloc(sizeof(ThreadManager));
     tm->threads_amount = threads_amount;
 
+    printf("sched_alg in Constructor: %s", sched_alg);
+
     //Dynamic protocol
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG) == 0){
         tm->queue_size = max_size;
