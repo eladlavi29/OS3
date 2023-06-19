@@ -218,6 +218,8 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     pthread_mutex_unlock(&tm->waitingRequests->m);
     pthread_mutex_unlock(&tm->m);
 
+    printf("%s","END\n");
+
     enqueue(tm->waitingRequests, fd,stats);
 }
 
