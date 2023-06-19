@@ -150,7 +150,7 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs, Stats* stats, Th
       Dup2(fd, STDOUT_FILENO);
       Execve(filename, emptylist, environ);
    }
-   WaitPid(pid,NULL);
+   WaitPid(pid,NULL,0);
 }
 
 
