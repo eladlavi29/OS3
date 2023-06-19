@@ -8,8 +8,6 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     ThreadManager* tm = malloc(sizeof(ThreadManager));
     tm->threads_amount = threads_amount;
 
-    printf("sched_alg in Constructor: %s", sched_alg);
-
     //Dynamic protocol
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG) == 0){
         tm->queue_size = max_size;
@@ -138,8 +136,6 @@ void dropRandomThread(ThreadManager* tm){
 }
 
 void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
-    printf("START\n");
-    printf("sched_alg: %s\n", tm->sched_alg);
 
     pthread_mutex_lock(&tm->m);
     pthread_mutex_lock(&tm->busyRequests->m);
@@ -170,9 +166,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     //Dynamic protocol
     if(getSize(tm->waitingRequests) + getSize(tm->busyRequests) >= tm->queue_size_dynamic
        && strcmp(tm->sched_alg, DYNAMIC_SCHEDALG) == 0){
-        printf("%s","HERE0\n");
         Close(fd);
-        printf("%s","HERE1\n");
         if(tm->queue_size_dynamic < tm->queue_size){
             tm->queue_size_dynamic = tm->queue_size_dynamic + 1;
         }
@@ -183,7 +177,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         pthread_mutex_unlock(&tm->waitingRequests->m);
         pthread_mutex_unlock(&tm->m);
 
-        printf("%s","HERE2\n");
 
         return;
     }
@@ -221,8 +214,6 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
     pthread_mutex_unlock(&tm->busyRequests->m);
     pthread_mutex_unlock(&tm->waitingRequests->m);
     pthread_mutex_unlock(&tm->m);
-
-    printf("%s","END\n");
 
     enqueue(tm->waitingRequests, fd,stats);
 }
