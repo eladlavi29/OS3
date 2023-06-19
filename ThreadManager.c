@@ -203,6 +203,7 @@ void ThreadManagerHandleRequest(ThreadManager* tm, int fd, Stats* stats){
         pthread_mutex_unlock(&tm->waitingRequests->m);
         pthread_cond_wait(&tm->c, &tm->m);
         pthread_mutex_unlock(&tm->m);
+        Close(fd);
         return;
     }
 
