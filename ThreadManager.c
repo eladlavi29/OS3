@@ -14,6 +14,7 @@ ThreadManager* ThreadManagerCtor(int threads_amount, int queue_size, int max_siz
     if(strcmp(sched_alg, DYNAMIC_SCHEDALG) == 0){
         tm->queue_size = max_size;
         tm->queue_size_dynamic = queue_size;
+        tm->sched_alg = DYNAMIC_SCHEDALG;
     }
     else{
         tm->queue_size = queue_size;
